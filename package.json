@@ -1,0 +1,31 @@
+{
+  "name": "workshop-kiro-fdlm",
+  "version": "1.0.0",
+  "description": "Proyecto base del Workshop Kiro - Red de Corresponsales (Fundacion delamujer)",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint src tests --ext .js",
+    "lint:fix": "eslint src tests --ext .js --fix",
+    "start": "node src/index.js"
+  },
+  "keywords": [
+    "kiro",
+    "workshop",
+    "corresponsales",
+    "devops"
+  ],
+  "license": "UNLICENSED",
+  "private": true,
+  "devDependencies": {
+    "@aws-sdk/client-dynamodb": "^3.744.0",
+    "@aws-sdk/client-sqs": "^3.744.0",
+    "@aws-sdk/lib-dynamodb": "^3.744.0",
+    "eslint": "8.57.0",
+    "jest": "29.7.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

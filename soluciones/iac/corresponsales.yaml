@@ -1,0 +1,726 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: >
+  Servicio de transacciones de la Red de Corresponsales.
+  Artefacto de referencia del Lab 5 - Workshop Kiro (Fundacion delamujer).
+  Material didactico: NO desplegar sin revision de arquitectura y seguridad.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# EXCEPCIONES DE SEGURIDAD DOCUMENTADAS
+#
+# Estas son decisiones conscientes, no descuidos. Cada una responde a un
+# hallazgo tipico de cfn-guard que no aplica a este servicio:
+#
+# - Sin WAF sobre API Gateway: el consumo es exclusivamente desde dispositivos
+#   registrados de puntos corresponsales, con API key y usage plan. Se
+#   reevaluaria si el endpoint se expusiera a internet abierto.
+# - Lambda fuera de VPC: no accede a recursos privados. DynamoDB, SQS y SSM se
+#   alcanzan por endpoint publico con IAM. Meterla en VPC agregaria NAT y
+#   arranque en frio sin beneficio de seguridad real.
+# - Sin replicacion multi-region: el servicio opera unicamente en Colombia y la
+#   entidad no tiene requisito de continuidad multi-region para este dominio.
+# - Sin autorizador Cognito ni IAM en el metodo: la autenticacion del dispositivo
+#   se resuelve con API key mas usage plan. Un autorizador Lambda es el siguiente
+#   paso natural y esta listado en la deuda de ARQUITECTURA.md.
+# ─────────────────────────────────────────────────────────────────────────────
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: Identificacion
+        Parameters:
+          - NombreProyecto
+          - Ambiente
+      - Label:
+          default: Codigo de la funcion Lambda
+        Parameters:
+          - BucketCodigo
+          - ClaveCodigo
+      - Label:
+          default: Observabilidad
+        Parameters:
+          - RetencionLogsDias
+          - CorreoNotificaciones
+          - UmbralErroresLambda
+          - UmbralDuracionLambdaMs
+          - UmbralLatenciaApiMs
+          - UmbralErrores5xxApi
+
+Parameters:
+
+  NombreProyecto:
+    Type: String
+    Default: corresponsales
+    Description: Nombre del proyecto. Se usa como prefijo de todos los recursos.
+    AllowedPattern: '^[a-z0-9-]{3,20}$'
+    ConstraintDescription: Solo minusculas, numeros y guiones. Entre 3 y 20 caracteres.
+
+  Ambiente:
+    Type: String
+    Default: dev
+    Description: Ambiente de despliegue.
+    AllowedValues:
+      - dev
+      - qa
+      - prod
+
+  BucketCodigo:
+    Type: String
+    Description: Bucket S3 que contiene el paquete .zip de la funcion Lambda.
+
+  ClaveCodigo:
+    Type: String
+    Default: corresponsales/registrar-transaccion.zip
+    Description: Ruta del paquete .zip dentro del bucket.
+
+  RetencionLogsDias:
+    Type: Number
+    Default: 30
+    Description: Dias de retencion de los log groups. Minimo 30 por estandar interno.
+    AllowedValues: [30, 60, 90, 180, 365, 400, 545, 731]
+
+  CorreoNotificaciones:
+    Type: String
+    Description: Correo que recibe las notificaciones de alarma.
+    AllowedPattern: '^[^\s@]+@[^\s@]+\.[^\s@]+$'
+    ConstraintDescription: Debe ser una direccion de correo valida.
+
+  UmbralErroresLambda:
+    Type: Number
+    Default: 5
+    Description: Errores de la Lambda en 5 minutos que disparan alarma.
+    MinValue: 1
+
+  UmbralDuracionLambdaMs:
+    Type: Number
+    Default: 8000
+    Description: Duracion promedio en ms que dispara alarma. El timeout es 10000 ms.
+    MinValue: 1000
+
+  UmbralLatenciaApiMs:
+    Type: Number
+    Default: 3000
+    Description: Latencia p99 de API Gateway en ms que dispara alarma.
+    MinValue: 100
+
+  UmbralErrores5xxApi:
+    Type: Number
+    Default: 5
+    Description: Respuestas 5xx en 5 minutos que disparan alarma.
+    MinValue: 1
+
+Conditions:
+
+  EsProduccion: !Equals [!Ref Ambiente, prod]
+
+Resources:
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # CIFRADO
+  # Una sola clave administrada por el cliente para tabla, colas, topico y logs.
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  ClaveCifrado:
+    Type: AWS::KMS::Key
+    # Se retiene: borrar la clave dejaria ilegibles los datos ya cifrados.
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Retain
+    Properties:
+      Description: !Sub 'Clave de cifrado del servicio ${NombreProyecto} en ${Ambiente}'
+      EnableKeyRotation: true
+      KeyPolicy:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: PermitirAdministracionDesdeLaCuenta
+            Effect: Allow
+            Principal:
+              AWS: !Sub 'arn:${AWS::Partition}:iam::${AWS::AccountId}:root'
+            Action: 'kms:*'
+            Resource: '*'
+          - Sid: PermitirUsoDesdeCloudWatchLogs
+            Effect: Allow
+            Principal:
+              Service: !Sub 'logs.${AWS::Region}.amazonaws.com'
+            Action:
+              - 'kms:Encrypt'
+              - 'kms:Decrypt'
+              - 'kms:ReEncrypt*'
+              - 'kms:GenerateDataKey*'
+              - 'kms:Describe*'
+            Resource: '*'
+            Condition:
+              ArnLike:
+                'kms:EncryptionContext:aws:logs:arn': !Sub 'arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:*'
+      Tags:
+        - Key: Proyecto
+          Value: !Ref NombreProyecto
+        - Key: Ambiente
+          Value: !Ref Ambiente
+        - Key: Entidad
+          Value: FundacionDelamujer
+        - Key: AdministradoPor
+          Value: CloudFormation
+
+  AliasClaveCifrado:
+    Type: AWS::KMS::Alias
+    Properties:
+      AliasName: !Sub 'alias/${NombreProyecto}-${Ambiente}-cifrado'
+      TargetKeyId: !Ref ClaveCifrado
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # PERSISTENCIA
+  # La clave de particion es la referencia de idempotencia: es lo que impide
+  # que un reintento del punto corresponsal duplique la transaccion.
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  TablaTransacciones:
+    Type: AWS::DynamoDB::Table
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Retain
+    Properties:
+      TableName: !Sub '${NombreProyecto}-${Ambiente}-transacciones'
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: referenciaIdempotencia
+          AttributeType: S
+        - AttributeName: codigoCorresponsal
+          AttributeType: S
+        - AttributeName: fecha
+          AttributeType: S
+      KeySchema:
+        - AttributeName: referenciaIdempotencia
+          KeyType: HASH
+      # Permite consultar las transacciones de un corresponsal sin escanear la
+      # tabla completa. Es lo que necesita liquidacion y soporte operativo.
+      GlobalSecondaryIndexes:
+        - IndexName: porCorresponsal
+          KeySchema:
+            - AttributeName: codigoCorresponsal
+              KeyType: HASH
+            - AttributeName: fecha
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+      SSESpecification:
+        SSEEnabled: true
+        SSEType: KMS
+        KMSMasterKeyId: !Ref ClaveCifrado
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      TimeToLiveSpecification:
+        AttributeName: expiraEn
+        Enabled: true
+      Tags:
+        - Key: Proyecto
+          Value: !Ref NombreProyecto
+        - Key: Ambiente
+          Value: !Ref Ambiente
+        - Key: Entidad
+          Value: FundacionDelamujer
+        - Key: AdministradoPor
+          Value: CloudFormation
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # MENSAJERIA
+  # La liquidacion de comisiones no debe bloquear la autorizacion de la
+  # transaccion. Si falla el procesamiento, el mensaje termina en la DLQ.
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  ColaLiquidacionesDLQ:
+    Type: AWS::SQS::Queue
+    # Se retiene: contiene liquidaciones fallidas pendientes de reproceso.
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Retain
+    Properties:
+      QueueName: !Sub '${NombreProyecto}-${Ambiente}-liquidaciones-dlq'
+      KmsMasterKeyId: !Ref ClaveCifrado
+      MessageRetentionPeriod: 1209600
+      Tags:
+        - Key: Proyecto
+          Value: !Ref NombreProyecto
+        - Key: Ambiente
+          Value: !Ref Ambiente
+        - Key: Entidad
+          Value: FundacionDelamujer
+        - Key: AdministradoPor
+          Value: CloudFormation
+
+  ColaLiquidaciones:
+    Type: AWS::SQS::Queue
+    # Se retiene: puede tener comisiones pendientes de liquidar en vuelo.
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Retain
+    Properties:
+      QueueName: !Sub '${NombreProyecto}-${Ambiente}-liquidaciones'
+      KmsMasterKeyId: !Ref ClaveCifrado
+      VisibilityTimeout: 60
+      MessageRetentionPeriod: 345600
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt ColaLiquidacionesDLQ.Arn
+        maxReceiveCount: 3
+      Tags:
+        - Key: Proyecto
+          Value: !Ref NombreProyecto
+        - Key: Ambiente
+          Value: !Ref Ambiente
+        - Key: Entidad
+          Value: FundacionDelamujer
+        - Key: AdministradoPor
+          Value: CloudFormation
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # CONFIGURACION
+  # Las tarifas cambian por decision de producto, no por despliegue de codigo.
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  ParametroTarifas:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Sub '/${NombreProyecto}/${Ambiente}/tarifas'
+      Type: String
+      Description: Tarifas y limites por tipo de transaccion. Valores didacticos.
+      Value: |
+        {
+          "DEPOSITO":       { "comisionFija": 1200, "comisionPorcentual": 0,      "limiteMaximo": 3000000, "requiereCupo": false },
+          "RETIRO":         { "comisionFija": 1500, "comisionPorcentual": 0,      "limiteMaximo": 2000000, "requiereCupo": true  },
+          "PAGO_CREDITO":   { "comisionFija": 900,  "comisionPorcentual": 0.0015, "limiteMaximo": 5000000, "requiereCupo": false },
+          "RECAUDO":        { "comisionFija": 700,  "comisionPorcentual": 0,      "limiteMaximo": 1000000, "requiereCupo": false },
+          "CONSULTA_SALDO": { "comisionFija": 300,  "comisionPorcentual": 0,      "limiteMaximo": 0,       "requiereCupo": false }
+        }
+      Tier: Standard
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # COMPUTO
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  GrupoLogsFuncion:
+    Type: AWS::Logs::LogGroup
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Retain
+    Properties:
+      LogGroupName: !Sub '/aws/lambda/${NombreProyecto}-${Ambiente}-registrar-transaccion'
+      RetentionInDays: !Ref RetencionLogsDias
+      KmsKeyId: !GetAtt ClaveCifrado.Arn
+
+  RolFuncion:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub '${NombreProyecto}-${Ambiente}-rol-registrar-transaccion'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: 'sts:AssumeRole'
+      Policies:
+        # Permisos minimos: solo las acciones que el handler ejecuta, y solo
+        # sobre los recursos de este stack. Ningun comodin.
+        - PolicyName: acceso-recursos-del-servicio
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Sid: EscribirLogsPropios
+                Effect: Allow
+                Action:
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource: !Sub '${GrupoLogsFuncion.Arn}:*'
+              - Sid: LeerYEscribirTransacciones
+                Effect: Allow
+                Action:
+                  - 'dynamodb:GetItem'
+                  - 'dynamodb:PutItem'
+                  - 'dynamodb:Query'
+                Resource:
+                  - !GetAtt TablaTransacciones.Arn
+                  - !Sub '${TablaTransacciones.Arn}/index/porCorresponsal'
+              - Sid: PublicarLiquidacion
+                Effect: Allow
+                Action:
+                  - 'sqs:SendMessage'
+                Resource: !GetAtt ColaLiquidaciones.Arn
+              - Sid: LeerTarifas
+                Effect: Allow
+                Action:
+                  - 'ssm:GetParameter'
+                Resource: !Sub 'arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${NombreProyecto}/${Ambiente}/tarifas'
+              - Sid: UsarClaveDeCifrado
+                Effect: Allow
+                Action:
+                  - 'kms:Decrypt'
+                  - 'kms:GenerateDataKey'
+                Resource: !GetAtt ClaveCifrado.Arn
+      Tags:
+        - Key: Proyecto
+          Value: !Ref NombreProyecto
+        - Key: Ambiente
+          Value: !Ref Ambiente
+        - Key: Entidad
+          Value: FundacionDelamujer
+        - Key: AdministradoPor
+          Value: CloudFormation
+
+  FuncionRegistrarTransaccion:
+    Type: AWS::Lambda::Function
+    DependsOn: GrupoLogsFuncion
+    Properties:
+      FunctionName: !Sub '${NombreProyecto}-${Ambiente}-registrar-transaccion'
+      Description: Autoriza y registra una transaccion de la red de corresponsales.
+      Runtime: nodejs22.x
+      Handler: src/handlers/registrarTransaccion.handler
+      Architectures:
+        - arm64
+      MemorySize: 512
+      Timeout: 10
+      ReservedConcurrentExecutions: !If [EsProduccion, 100, 10]
+      Code:
+        S3Bucket: !Ref BucketCodigo
+        S3Key: !Ref ClaveCodigo
+      Role: !GetAtt RolFuncion.Arn
+      TracingConfig:
+        Mode: Active
+      Environment:
+        Variables:
+          TABLA_TRANSACCIONES: !Ref TablaTransacciones
+          INDICE_POR_CORRESPONSAL: porCorresponsal
+          COLA_LIQUIDACIONES: !Ref ColaLiquidaciones
+          PARAMETRO_TARIFAS: !Ref ParametroTarifas
+          AMBIENTE: !Ref Ambiente
+          NIVEL_LOG: !If [EsProduccion, INFO, DEBUG]
+      Tags:
+        - Key: Proyecto
+          Value: !Ref NombreProyecto
+        - Key: Ambiente
+          Value: !Ref Ambiente
+        - Key: Entidad
+          Value: FundacionDelamujer
+        - Key: AdministradoPor
+          Value: CloudFormation
+
+  PermisoInvocacionApi:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt FuncionRegistrarTransaccion.Arn
+      Action: 'lambda:InvokeFunction'
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub 'arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiCorresponsales}/*/POST/transacciones'
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # EXPOSICION
+  # Punto de entrada para los dispositivos de los puntos corresponsales.
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  ApiCorresponsales:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: !Sub '${NombreProyecto}-${Ambiente}-api'
+      Description: API de transacciones de la red de corresponsales.
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+      Tags:
+        - Key: Proyecto
+          Value: !Ref NombreProyecto
+        - Key: Ambiente
+          Value: !Ref Ambiente
+        - Key: Entidad
+          Value: FundacionDelamujer
+        - Key: AdministradoPor
+          Value: CloudFormation
+
+  RecursoTransacciones:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref ApiCorresponsales
+      ParentId: !GetAtt ApiCorresponsales.RootResourceId
+      PathPart: transacciones
+
+  MetodoRegistrarTransaccion:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref ApiCorresponsales
+      ResourceId: !Ref RecursoTransacciones
+      HttpMethod: POST
+      # La autenticacion del dispositivo se resuelve con API key + usage plan.
+      # Ver excepciones documentadas al inicio de la plantilla.
+      AuthorizationType: NONE
+      ApiKeyRequired: true
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub 'arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${FuncionRegistrarTransaccion.Arn}/invocations'
+
+  GrupoLogsApi:
+    Type: AWS::Logs::LogGroup
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Retain
+    Properties:
+      LogGroupName: !Sub '/aws/apigateway/${NombreProyecto}-${Ambiente}-api'
+      RetentionInDays: !Ref RetencionLogsDias
+      KmsKeyId: !GetAtt ClaveCifrado.Arn
+
+  DespliegueApi:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn: MetodoRegistrarTransaccion
+    Properties:
+      RestApiId: !Ref ApiCorresponsales
+      Description: !Sub 'Despliegue del ambiente ${Ambiente}'
+
+  EtapaApi:
+    Type: AWS::ApiGateway::Stage
+    # NOTA OPERATIVA: el registro de acceso requiere un rol de CloudWatch
+    # configurado a nivel de cuenta (AWS::ApiGateway::Account). Es un recurso
+    # singleton por cuenta y region, por eso no se crea aqui: si dos stacks lo
+    # declaran, se pisan. Debe existir antes de desplegar.
+    Properties:
+      RestApiId: !Ref ApiCorresponsales
+      DeploymentId: !Ref DespliegueApi
+      StageName: !Ref Ambiente
+      TracingEnabled: true
+      AccessLogSetting:
+        DestinationArn: !GetAtt GrupoLogsApi.Arn
+        Format: '{"requestId":"$context.requestId","ip":"$context.identity.sourceIp","httpMethod":"$context.httpMethod","path":"$context.path","status":"$context.status","latencia":"$context.responseLatency","apiKeyId":"$context.identity.apiKeyId"}'
+      MethodSettings:
+        - ResourcePath: '/*'
+          HttpMethod: '*'
+          LoggingLevel: ERROR
+          MetricsEnabled: true
+          DataTraceEnabled: false
+          ThrottlingBurstLimit: 100
+          ThrottlingRateLimit: 50
+      Tags:
+        - Key: Proyecto
+          Value: !Ref NombreProyecto
+        - Key: Ambiente
+          Value: !Ref Ambiente
+        - Key: Entidad
+          Value: FundacionDelamujer
+        - Key: AdministradoPor
+          Value: CloudFormation
+
+  LlaveApi:
+    Type: AWS::ApiGateway::ApiKey
+    Properties:
+      Name: !Sub '${NombreProyecto}-${Ambiente}-llave-puntos'
+      Description: Llave para los dispositivos de los puntos corresponsales.
+      Enabled: true
+
+  PlanUsoApi:
+    Type: AWS::ApiGateway::UsagePlan
+    Properties:
+      UsagePlanName: !Sub '${NombreProyecto}-${Ambiente}-plan-uso'
+      Description: Limites de consumo de la red de corresponsales.
+      ApiStages:
+        - ApiId: !Ref ApiCorresponsales
+          Stage: !Ref EtapaApi
+      Throttle:
+        BurstLimit: 100
+        RateLimit: 50
+      Quota:
+        Limit: 1000000
+        Period: MONTH
+
+  AsociacionLlavePlanUso:
+    Type: AWS::ApiGateway::UsagePlanKey
+    Properties:
+      KeyId: !Ref LlaveApi
+      KeyType: API_KEY
+      UsagePlanId: !Ref PlanUsoApi
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # OBSERVABILIDAD
+  # Cada alarma tiene una accion asociada en docs/RUNBOOK.md.
+  # Una alarma sin procedimiento es ruido que al mes nadie mira.
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  TopicoAlarmas:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub '${NombreProyecto}-${Ambiente}-alarmas'
+      DisplayName: Alarmas de la red de corresponsales
+      KmsMasterKeyId: !Ref ClaveCifrado
+      Subscription:
+        - Protocol: email
+          Endpoint: !Ref CorreoNotificaciones
+      Tags:
+        - Key: Proyecto
+          Value: !Ref NombreProyecto
+        - Key: Ambiente
+          Value: !Ref Ambiente
+        - Key: Entidad
+          Value: FundacionDelamujer
+        - Key: AdministradoPor
+          Value: CloudFormation
+
+  # Transacciones que no se estan autorizando. Impacto directo en el cliente
+  # que esta parado frente al mostrador.
+  AlarmaErroresFuncion:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub '${NombreProyecto}-${Ambiente}-errores-funcion'
+      AlarmDescription: La funcion esta fallando. Hay transacciones que no se autorizan.
+      Namespace: AWS/Lambda
+      MetricName: Errors
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref FuncionRegistrarTransaccion
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: !Ref UmbralErroresLambda
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
+      AlarmActions:
+        - !Ref TopicoAlarmas
+      OKActions:
+        - !Ref TopicoAlarmas
+
+  # Antesala del timeout. Si sigue subiendo, empiezan los reintentos del punto
+  # y con ellos el riesgo de duplicados si la idempotencia falla.
+  AlarmaDuracionFuncion:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub '${NombreProyecto}-${Ambiente}-duracion-funcion'
+      AlarmDescription: La funcion se esta acercando al timeout de 10 segundos.
+      Namespace: AWS/Lambda
+      MetricName: Duration
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref FuncionRegistrarTransaccion
+      ExtendedStatistic: p95
+      Period: 300
+      EvaluationPeriods: 2
+      Threshold: !Ref UmbralDuracionLambdaMs
+      ComparisonOperator: GreaterThanThreshold
+      TreatMissingData: notBreaching
+      AlarmActions:
+        - !Ref TopicoAlarmas
+
+  # Se alcanzo el limite de concurrencia. Transacciones rechazadas por
+  # capacidad, no por regla de negocio.
+  AlarmaThrottlingFuncion:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub '${NombreProyecto}-${Ambiente}-throttling-funcion'
+      AlarmDescription: La funcion esta siendo limitada por concurrencia.
+      Namespace: AWS/Lambda
+      MetricName: Throttles
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref FuncionRegistrarTransaccion
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
+      AlarmActions:
+        - !Ref TopicoAlarmas
+
+  # Comisiones que no se liquidaron. No afecta al cliente, si al corresponsal:
+  # es plata que no le llego.
+  AlarmaMensajesEnDLQ:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub '${NombreProyecto}-${Ambiente}-mensajes-en-dlq'
+      AlarmDescription: Hay liquidaciones de comision que no se pudieron procesar.
+      Namespace: AWS/SQS
+      MetricName: ApproximateNumberOfMessagesVisible
+      Dimensions:
+        - Name: QueueName
+          Value: !GetAtt ColaLiquidacionesDLQ.QueueName
+      Statistic: Maximum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 0
+      ComparisonOperator: GreaterThanThreshold
+      TreatMissingData: notBreaching
+      AlarmActions:
+        - !Ref TopicoAlarmas
+
+  AlarmaErrores5xxApi:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub '${NombreProyecto}-${Ambiente}-errores-5xx-api'
+      AlarmDescription: La API esta devolviendo errores del servidor a los puntos.
+      Namespace: AWS/ApiGateway
+      MetricName: 5XXError
+      Dimensions:
+        - Name: ApiName
+          Value: !Sub '${NombreProyecto}-${Ambiente}-api'
+        - Name: Stage
+          Value: !Ref Ambiente
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: !Ref UmbralErrores5xxApi
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
+      AlarmActions:
+        - !Ref TopicoAlarmas
+
+  # Latencia alta se traduce en fila en el mostrador y en reintentos del punto.
+  AlarmaLatenciaApi:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub '${NombreProyecto}-${Ambiente}-latencia-api'
+      AlarmDescription: La API esta respondiendo lento. Hay fila en los puntos.
+      Namespace: AWS/ApiGateway
+      MetricName: Latency
+      Dimensions:
+        - Name: ApiName
+          Value: !Sub '${NombreProyecto}-${Ambiente}-api'
+        - Name: Stage
+          Value: !Ref Ambiente
+      ExtendedStatistic: p99
+      Period: 300
+      EvaluationPeriods: 2
+      Threshold: !Ref UmbralLatenciaApiMs
+      ComparisonOperator: GreaterThanThreshold
+      TreatMissingData: notBreaching
+      AlarmActions:
+        - !Ref TopicoAlarmas
+
+Outputs:
+
+  UrlApi:
+    Description: URL del endpoint de transacciones.
+    Value: !Sub 'https://${ApiCorresponsales}.execute-api.${AWS::Region}.${AWS::URLSuffix}/${Ambiente}/transacciones'
+    Export:
+      Name: !Sub '${AWS::StackName}-url-api'
+
+  IdLlaveApi:
+    Description: ID de la API key. El valor se consulta con la CLI, no se expone aqui.
+    Value: !Ref LlaveApi
+
+  NombreTablaTransacciones:
+    Description: Nombre de la tabla de transacciones.
+    Value: !Ref TablaTransacciones
+    Export:
+      Name: !Sub '${AWS::StackName}-tabla-transacciones'
+
+  UrlColaLiquidaciones:
+    Description: URL de la cola de liquidacion de comisiones.
+    Value: !Ref ColaLiquidaciones
+    Export:
+      Name: !Sub '${AWS::StackName}-cola-liquidaciones'
+
+  UrlColaLiquidacionesDLQ:
+    Description: URL de la dead letter queue de liquidaciones.
+    Value: !Ref ColaLiquidacionesDLQ
+
+  ArnFuncion:
+    Description: ARN de la funcion que registra transacciones.
+    Value: !GetAtt FuncionRegistrarTransaccion.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-arn-funcion'
+
+  ArnTopicoAlarmas:
+    Description: ARN del topico de notificacion de alarmas.
+    Value: !Ref TopicoAlarmas
+
+  NombreParametroTarifas:
+    Description: Ruta del parametro de tarifas en SSM Parameter Store.
+    Value: !Ref ParametroTarifas

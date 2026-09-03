@@ -1,0 +1,121 @@
+name: Validar infraestructura
+
+# Solo corre cuando cambia la infraestructura o este mismo workflow.
+# Un pipeline que corre todo en cada cambio desperdicia minutos y paciencia.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'infra/**'
+      - '.github/workflows/validar-infra.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'infra/**'
+      - '.github/workflows/validar-infra.yml'
+
+# Este workflow NO toca AWS: valida archivos. Por eso no necesita credenciales
+# y puede correr con seguridad en pull requests de cualquier origen.
+permissions:
+  contents: read
+
+concurrency:
+  group: infra-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Versiones fijadas: una herramienta de validacion que cambia sola convierte
+  # el pipeline en algo no reproducible.
+  VERSION_CFN_LINT: '1.22.3'
+  VERSION_CFN_GUARD: '3.1.2'
+  RUTA_PLANTILLAS: infra/cloudformation
+
+jobs:
+
+  sintaxis:
+    name: Sintaxis y esquema (cfn-lint)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Descargar el codigo
+        uses: actions/checkout@v4
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instalar cfn-lint
+        run: pip install "cfn-lint==${{ env.VERSION_CFN_LINT }}"
+
+      - name: Validar plantillas
+        run: |
+          echo "## Resultado de cfn-lint" >> "$GITHUB_STEP_SUMMARY"
+          ESTADO=0
+          for plantilla in ${{ env.RUTA_PLANTILLAS }}/*.yaml ${{ env.RUTA_PLANTILLAS }}/*.yml; do
+            [ -e "$plantilla" ] || continue
+            echo "Validando: $plantilla"
+            if cfn-lint "$plantilla"; then
+              echo "- OK \`$plantilla\`" >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "- FALLO \`$plantilla\`" >> "$GITHUB_STEP_SUMMARY"
+              ESTADO=1
+            fi
+          done
+          exit $ESTADO
+
+      # Los informativos se reportan pero no bloquean: son sugerencias de
+      # buenas practicas, no errores.
+      - name: Reportar sugerencias informativas
+        if: always()
+        continue-on-error: true
+        run: |
+          echo "## Sugerencias informativas" >> "$GITHUB_STEP_SUMMARY"
+          for plantilla in ${{ env.RUTA_PLANTILLAS }}/*.yaml ${{ env.RUTA_PLANTILLAS }}/*.yml; do
+            [ -e "$plantilla" ] || continue
+            cfn-lint --include-checks I --format parseable -t "$plantilla" >> "$GITHUB_STEP_SUMMARY" || true
+          done
+
+  cumplimiento:
+    name: Seguridad y cumplimiento (cfn-guard)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: sintaxis
+
+    steps:
+      - name: Descargar el codigo
+        uses: actions/checkout@v4
+
+      - name: Instalar cfn-guard
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf \
+            https://raw.githubusercontent.com/aws-cloudformation/cloudformation-guard/main/install-guard.sh \
+            | VERSION="${{ env.VERSION_CFN_GUARD }}" sh
+          echo "$HOME/.guard/bin" >> "$GITHUB_PATH"
+
+      - name: Descargar reglas de referencia de AWS
+        run: |
+          mkdir -p reglas
+          curl -sSfL -o reglas/aws-guard-rules-registry.zip \
+            https://github.com/aws-cloudformation/aws-guard-rules-registry/releases/latest/download/ruleset-build-artifacts.zip
+          unzip -q -o reglas/aws-guard-rules-registry.zip -d reglas/
+
+      # Advierte pero no bloquea: el conjunto de reglas de referencia es amplio
+      # y algunas no aplican a este servicio. Las excepciones aceptadas estan
+      # documentadas como comentarios en la propia plantilla.
+      # Cuando la entidad tenga su propio conjunto de reglas, este paso pasa a
+      # ser bloqueante.
+      - name: Revisar cumplimiento
+        continue-on-error: true
+        run: |
+          echo "## Resultado de cfn-guard" >> "$GITHUB_STEP_SUMMARY"
+          for plantilla in ${{ env.RUTA_PLANTILLAS }}/*.yaml ${{ env.RUTA_PLANTILLAS }}/*.yml; do
+            [ -e "$plantilla" ] || continue
+            echo "### \`$plantilla\`" >> "$GITHUB_STEP_SUMMARY"
+            cfn-guard validate \
+              --data "$plantilla" \
+              --rules reglas/ \
+              --show-summary fail \
+              >> "$GITHUB_STEP_SUMMARY" 2>&1 || true
+          done

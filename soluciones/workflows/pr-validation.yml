@@ -1,0 +1,101 @@
+name: Validar pull request
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize, labeled, unlabeled]
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+
+  convenciones:
+    name: Convenciones del PR
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Verificar titulo con Conventional Commits
+        env:
+          TITULO: ${{ github.event.pull_request.title }}
+        run: |
+          PATRON='^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([a-z0-9-]+\))?!?: .{10,}$'
+          if echo "$TITULO" | grep -Eq "$PATRON"; then
+            echo "Titulo valido: $TITULO"
+          else
+            echo "::error::El titulo del PR no sigue Conventional Commits."
+            echo "::error::Recibido: $TITULO"
+            echo "::error::Esperado por ejemplo: 'feat: agregar tipo de transaccion GIRO'"
+            exit 1
+          fi
+
+      - name: Verificar que el PR tenga descripcion
+        env:
+          CUERPO: ${{ github.event.pull_request.body }}
+        run: |
+          LONGITUD=$(printf '%s' "$CUERPO" | tr -d '[:space:]' | wc -c)
+          if [ "$LONGITUD" -lt 30 ]; then
+            echo "::error::El PR necesita una descripcion de al menos 30 caracteres."
+            exit 1
+          fi
+          echo "Descripcion presente (${LONGITUD} caracteres utiles)."
+
+  compuerta-tarifas:
+    name: Compuerta sobre la tabla de tarifas
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    # Equivalente en CI del hook `proteger-tarifas` del Lab 3. El hook mejora la
+    # experiencia de quien usa Kiro; esta compuerta aplica a todo el mundo, sin
+    # importar con que herramienta se hizo el cambio.
+    steps:
+      - name: Descargar el codigo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detectar cambios en tarifas y verificar etiqueta
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          CABEZA: ${{ github.event.pull_request.head.sha }}
+          ETIQUETAS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+        run: |
+          ARCHIVO_PROTEGIDO='src/corresponsales/tarifas.js'
+
+          if git diff --name-only "$BASE" "$CABEZA" | grep -Fxq "$ARCHIVO_PROTEGIDO"; then
+            echo "Este PR modifica $ARCHIVO_PROTEGIDO"
+            echo "TARIFAS_MODIFICADAS=si" >> "$GITHUB_ENV"
+
+            if echo ",$ETIQUETAS," | grep -q ',revisado-producto,'; then
+              echo "Etiqueta 'revisado-producto' presente. Cambio autorizado."
+            else
+              echo "::error::Este PR modifica la tabla de tarifas de la red de corresponsales."
+              echo "::error::Requiere la etiqueta 'revisado-producto' para poder integrarse."
+              exit 1
+            fi
+          else
+            echo "Sin cambios en $ARCHIVO_PROTEGIDO"
+            echo "TARIFAS_MODIFICADAS=no" >> "$GITHUB_ENV"
+          fi
+
+      - name: Comentar el resultado en el PR
+        if: always() && env.TARIFAS_MODIFICADAS == 'si'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const aprobado = '${{ job.status }}' === 'success';
+            const cuerpo = aprobado
+              ? 'Compuerta de tarifas: **autorizada**. Este PR modifica `src/corresponsales/tarifas.js` y tiene la etiqueta `revisado-producto`.'
+              : 'Compuerta de tarifas: **bloqueada**. Este PR modifica `src/corresponsales/tarifas.js`, que define las tarifas y limites de toda la red de corresponsales. Se requiere la etiqueta `revisado-producto` tras la revision del area de producto.';
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: cuerpo,
+            });

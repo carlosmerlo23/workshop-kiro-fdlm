@@ -1,0 +1,66 @@
+name: Integracion continua
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Permisos minimos: el workflow solo necesita leer el codigo.
+permissions:
+  contents: read
+
+# Si llega un push nuevo al mismo branch, cancela la ejecucion anterior.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  VERSION_NODE: '22'
+  UMBRAL_COBERTURA: '60'
+
+jobs:
+
+  calidad:
+    name: Lint y pruebas
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Descargar el codigo
+        uses: actions/checkout@v4
+
+      - name: Preparar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.VERSION_NODE }}
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      # El linter corre primero porque tarda segundos y las pruebas minutos.
+      # Fallar temprano y barato.
+      - name: Verificar estilo de codigo
+        run: npm run lint
+
+      - name: Ejecutar pruebas con cobertura
+        run: npm run test:coverage -- --coverageReporters=text --coverageReporters=lcov --coverageReporters=json-summary
+
+      - name: Verificar umbral de cobertura
+        run: |
+          COBERTURA=$(node -p "Math.floor(require('./coverage/coverage-summary.json').total.statements.pct)")
+          echo "Cobertura de sentencias: ${COBERTURA}%"
+          echo "### Cobertura de sentencias: ${COBERTURA}%" >> "$GITHUB_STEP_SUMMARY"
+          if [ "$COBERTURA" -lt "${{ env.UMBRAL_COBERTURA }}" ]; then
+            echo "::error::La cobertura ${COBERTURA}% esta por debajo del umbral de ${{ env.UMBRAL_COBERTURA }}%"
+            exit 1
+          fi
+
+      - name: Publicar reporte de cobertura
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cobertura
+          path: coverage/
+          retention-days: 7

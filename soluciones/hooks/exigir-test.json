@@ -1,0 +1,14 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Exigir test del modulo",
+      "trigger": "PostFileCreate",
+      "matcher": "src/corresponsales/.*\\.js$",
+      "action": {
+        "type": "agent",
+        "prompt": "Se creó un módulo nuevo en el dominio de corresponsales. Verifica que exista el test correspondiente en tests/<modulo>.test.js. Si el módulo valida montos, límites o cupos, los tests de casos de borde son obligatorios: valor exacto en el límite, uno por encima y uno por debajo. Recuerda que los montos son enteros de pesos colombianos, sin centavos. Si el test no existe, ofrécete a generarlo."
+      }
+    }
+  ]
+}

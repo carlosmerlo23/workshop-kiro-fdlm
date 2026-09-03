@@ -1,0 +1,34 @@
+# Dependencias
+node_modules/
+# package-lock.json SI se versiona: `npm ci` lo necesita en el pipeline.
+
+# Cobertura y build
+coverage/
+dist/
+build/
+*.log
+
+# Entorno
+.env
+.env.*
+!.env.example
+
+# IaC
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+cdk.out/
+packaged-*.yaml
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Editores
+.idea/
+*.swp
+
+# Kiro: la configuracion de steering y hooks SI se versiona (es del equipo).
+# Solo se ignora estado local de sesiones.
+.kiro/cache/
