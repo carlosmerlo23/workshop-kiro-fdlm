@@ -160,7 +160,7 @@ Al terminar las dos sesiones, cada participante habrá:
 ## Agenda
 
 Los tiempos están en minutos relativos al inicio de cada sesión, para que funcionen con cualquier
-hora de arranque. El facilitador fija el reloj real en [docs/FACILITADOR.md](./docs/FACILITADOR.md).
+hora de arranque. El facilitador te compartirá las horas reales al comenzar.
 
 La columna **Prompts** es el número de prompts a Kiro de la ruta guiada de cada lab. Está ahí porque
 es lo que determina si el lab cabe en su bloque: cada prompto sustancial toma entre 3 y 4 minutos
@@ -269,7 +269,6 @@ workshop-kiro-fdlm/
 │   ├── CASO-NEGOCIO.md           # Red de corresponsales: contexto y reglas
 │   ├── GESTION-CREDITOS.md       # Planes de Kiro y presupuesto de créditos
 │   ├── CHEATSHEET-KIRO.md        # Referencia rápida de uso
-│   ├── FACILITADOR.md            # Guía del facilitador (no repartir)
 │   ├── PLAN-ADOPCION.md          # Qué hacer después del workshop
 │   └── ADAPTAR-A-OTRO-CLIENTE.md # Cómo reutilizar este workshop
 │

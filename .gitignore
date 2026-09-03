@@ -32,3 +32,7 @@ Thumbs.db
 # Kiro: la configuracion de steering y hooks SI se versiona (es del equipo).
 # Solo se ignora estado local de sesiones.
 .kiro/cache/
+
+# Material solo para el facilitador: NO se publica en el repo de asistentes.
+# El archivo sigue existiendo localmente para que el facilitador lo estudie.
+docs/FACILITADOR.md
