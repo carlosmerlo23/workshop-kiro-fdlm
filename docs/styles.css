@@ -67,6 +67,9 @@ code {
   display: flex; flex-direction: column;
   overflow-y: auto; z-index: 50;
 }
+.nav-titulo-workshop { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+.nav-kiro { width: 30px; height: 30px; border-radius: 8px; }
+.nav-titulo-workshop span { font-weight: 800; font-size: 1.02rem; color: var(--blanco); }
 .nav-marca {
   display: flex; align-items: center; gap: 10px;
   padding-bottom: 22px; margin-bottom: 20px;
@@ -157,9 +160,13 @@ code {
 .portada-logo-escala { height: 46px; width: auto; }
 .portada-logo-aws { height: 30px; width: auto; }
 .portada-logo-div { width: 1px; height: 34px; background: var(--borde); }
+.portada-marca-kiro { display: flex; align-items: center; gap: 16px; margin-bottom: 30px; }
+.portada-kiro-simbolo { width: 60px; height: 60px; border-radius: 14px; box-shadow: 0 8px 24px rgba(144,70,255,.35); }
+.portada-marca-texto { display: flex; flex-direction: column; }
+.portada-kiro-nombre { font-size: 1.35rem; font-weight: 800; color: var(--blanco); letter-spacing: -.01em; line-height: 1.2; }
 .portada-kicker {
-  color: var(--menta); font-weight: 600; font-size: .95rem;
-  letter-spacing: .04em; margin-bottom: 20px;
+  color: var(--menta); font-weight: 600; font-size: .9rem;
+  letter-spacing: .03em;
 }
 .portada-cliente { margin-bottom: 26px; }
 .portada-cliente-logo {
@@ -333,9 +340,11 @@ code {
   .nav-lateral.abierto { transform: translateX(0); }
   .contenido { margin-left: 0; }
   .menu-toggle { display: block; }
-  .portada-titulo { font-size: 2.3rem; }
-  .portada-sub { font-size: 1.2rem; }
-  .portada-cliente-logo { height: 100px; }
+  .portada-titulo { font-size: 2.2rem; }
+  .portada-sub { font-size: 1.1rem; }
+  .portada-cliente-logo { height: 96px; }
+  .portada-kiro-simbolo { width: 50px; height: 50px; }
+  .portada-kiro-nombre { font-size: 1.15rem; }
   .seccion, .portada, .pie { padding-left: 22px; padding-right: 22px; }
   .sesiones-grid { grid-template-columns: 1fr; }
   .req-fila { grid-template-columns: 1fr; gap: 4px; }
