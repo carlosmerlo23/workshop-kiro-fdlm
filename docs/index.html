@@ -44,6 +44,9 @@
       <a href="#instalacion" class="nav-link" data-seccion="instalacion">Instalación paso a paso</a>
       <a href="#checklist" class="nav-link" data-seccion="checklist">Lista de verificación</a>
       <a href="#problemas" class="nav-link" data-seccion="problemas">Si algo falla</a>
+      <p class="nav-grupo">El workshop</p>
+      <a href="#sesion1" class="nav-link nav-link-s1" data-seccion="sesion1">Sesión 1 · Desarrollo</a>
+      <a href="#sesion2" class="nav-link nav-link-s2" data-seccion="sesion2">Sesión 2 · Nube AWS</a>
     </nav>
 
     <div class="nav-pie">
@@ -546,6 +549,451 @@ npm install</code></pre>
       </div>
     </section>
 
+    <!-- ============ SESIÓN 1 ============ -->
+    <section id="sesion1" class="seccion seccion-sesion s1">
+      <div class="sesion-hero s1">
+        <div class="sesion-hero-num">Sesión 1 · 2 horas</div>
+        <h2>Construir mejor y más rápido</h2>
+        <p class="seccion-intro">
+          Aprenderás a usar Kiro para entender un proyecto que no conoces, enseñarle las reglas del
+          equipo, automatizar lo repetitivo y conectarlo a información confiable. Cuatro laboratorios
+          prácticos, cada uno con el prompt exacto para copiar.
+        </p>
+        <div class="sesion-meta">
+          <span>🧪 4 laboratorios</span>
+          <span>⌨️ Modo conversación (Vibe)</span>
+          <span>💡 No desplegamos nada</span>
+        </div>
+      </div>
+
+      <!-- Lab 1 -->
+      <article class="lab">
+        <div class="lab-head">
+          <span class="lab-badge s1">Lab 1</span>
+          <div>
+            <h3>Entender código que no escribiste</h3>
+            <p class="lab-dur">≈ 22 minutos · 4 prompts</p>
+          </div>
+        </div>
+        <p class="lab-obj"><strong>Objetivo:</strong> volverte productivo en un proyecto que nunca
+          habías visto: entenderlo, documentarlo y encontrarle un error real.</p>
+        <p class="lab-porque">Es el caso donde Kiro paga más rápido. Lo que a una persona le toma días
+          de leer código y preguntar, Kiro lo resuelve en minutos.</p>
+
+        <div class="prompt-item">
+          <div class="prompt-cabecera"><span class="prompt-n">1</span> Entender el módulo (no cambies nada aún)</div>
+          <div class="bloque-codigo">
+            <button class="btn-copiar" data-copy="Analiza la carpeta src/corresponsales/ y explícame: 1) qué hace el módulo en términos de negocio, 2) qué responsabilidad tiene cada archivo, 3) el flujo completo de registrarTransaccion, indicando en qué orden se ejecutan las validaciones. Sé conciso. No modifiques nada todavía.">Copiar</button>
+            <pre><code>Analiza la carpeta src/corresponsales/ y explícame:
+1) qué hace el módulo en términos de negocio,
+2) qué responsabilidad tiene cada archivo,
+3) el flujo completo de registrarTransaccion, indicando
+   en qué orden se ejecutan las validaciones.
+Sé conciso. No modifiques nada todavía.</code></pre>
+          </div>
+          <p class="inline-nota">Verifica en el código que el orden que describió sea el real. Ese hábito de comprobar es el corazón del workshop.</p>
+        </div>
+
+        <div class="prompt-item">
+          <div class="prompt-cabecera"><span class="prompt-n">2</span> Documentar lo que entendiste</div>
+          <div class="bloque-codigo">
+            <button class="btn-copiar" data-copy="Haz dos cosas: 1) crea docs/ONBOARDING.md para alguien que entra hoy a mantener src/corresponsales/, con qué problema de negocio resuelve, diagrama del flujo, tabla de archivos y cómo correr los tests; 2) agrega comentarios JSDoc en español a las funciones exportadas de comisiones.js y limites.js. No cambies la lógica.">Copiar</button>
+            <pre><code>Haz dos cosas:
+1) crea docs/ONBOARDING.md para alguien que entra hoy a
+   mantener src/corresponsales/ (qué resuelve, diagrama del
+   flujo, tabla de archivos, cómo correr los tests);
+2) agrega comentarios JSDoc en español a las funciones
+   exportadas de comisiones.js y limites.js.
+No cambies la lógica.</code></pre>
+          </div>
+        </div>
+
+        <div class="prompt-item">
+          <div class="prompt-cabecera"><span class="prompt-n">3</span> Encontrar un error real</div>
+          <div class="bloque-codigo">
+            <button class="btn-copiar" data-copy="Haz una revisión crítica de limites.js y transacciones.js buscando errores en comparaciones de límites, casos de borde y validaciones de entrada que falten. Para cada hallazgo dime archivo, línea, por qué es un problema y un ejemplo que lo reproduzca. No corrijas nada todavía.">Copiar</button>
+            <pre><code>Haz una revisión crítica de limites.js y transacciones.js
+buscando errores en comparaciones de límites, casos de borde
+y validaciones de entrada que falten. Para cada hallazgo dime
+archivo, línea, por qué es un problema y un ejemplo que lo
+reproduzca. No corrijas nada todavía.</code></pre>
+          </div>
+          <div class="callout callout-info"><strong>Lo que vas a encontrar:</strong> hay un retiro que se rechaza aunque el corresponsal tiene el efectivo exacto. Es un error de un solo carácter (<code>&gt;</code> en vez de <code>&gt;=</code>) con impacto directo en el cliente que está en el mostrador.</div>
+        </div>
+
+        <div class="prompt-item">
+          <div class="prompt-cabecera"><span class="prompt-n">4</span> Corregir, con la prueba primero</div>
+          <div class="bloque-codigo">
+            <button class="btn-copiar" data-copy="Corrige ese defecto en este orden: 1) primero escribe un test que falle demostrando que un retiro por un monto exactamente igual al cupo debe ser válido, y muéstrame que falla; 2) después haz la corrección mínima; 3) agrega los tests de borde (un peso por debajo y un peso por encima del cupo).">Copiar</button>
+            <pre><code>Corrige ese defecto en este orden:
+1) primero escribe un test que falle demostrando que un retiro
+   por un monto exactamente igual al cupo debe ser válido;
+2) después haz la corrección mínima;
+3) agrega los tests de borde (un peso por debajo y uno por
+   encima del cupo).</code></pre>
+          </div>
+          <div class="verificar">✔ <strong>Verifica:</strong> <code>npm test</code> — el test que fallaba ahora debe pasar.</div>
+        </div>
+
+        <div class="lab-llevar">💡 <strong>Para llevar:</strong> entender primero y cambiar después; verificar el mapa antes de construir sobre él; y el ciclo prueba-que-falla → corrección → prueba-que-pasa.</div>
+      </article>
+
+      <!-- Lab 2 -->
+      <article class="lab">
+        <div class="lab-head">
+          <span class="lab-badge s1">Lab 2</span>
+          <div>
+            <h3>Steering files: el ADN del equipo</h3>
+            <p class="lab-dur">≈ 20 minutos · 3 prompts</p>
+          </div>
+        </div>
+        <p class="lab-obj"><strong>Objetivo:</strong> dejar escrito, una sola vez, el contexto y las
+          reglas del equipo, para que Kiro las aplique siempre sin que nadie las repita.</p>
+        <p class="lab-porque">Lo que repites en cada instrucción cuesta tiempo y sale distinto cada vez.
+          Un <em>steering file</em> lo resuelve: el estándar viaja con el proyecto.</p>
+
+        <div class="prompt-item">
+          <div class="prompt-cabecera"><span class="prompt-n">1</span> Medición base (pregunta antes de crear nada)</div>
+          <div class="bloque-codigo">
+            <button class="btn-copiar" data-copy="¿Qué versión de Node.js debo usar en este proyecto y en qué carpeta pongo un test nuevo?">Copiar</button>
+            <pre><code>¿Qué versión de Node.js debo usar en este proyecto y en qué
+carpeta pongo un test nuevo?</code></pre>
+          </div>
+          <p class="inline-nota">Anota la respuesta. Al final del lab repetirás la pregunta y verás la diferencia.</p>
+        </div>
+
+        <div class="prompt-item">
+          <div class="prompt-cabecera"><span class="prompt-n">2</span> Contexto de negocio</div>
+          <div class="bloque-codigo">
+            <button class="btn-copiar" data-copy="Crea .kiro/steering/producto-corresponsales.md con el contexto de negocio: Fundación de la Mujer es una entidad microfinanciera enfocada en la inclusión financiera de mujeres microempresarias; este servicio autoriza transacciones en la red de corresponsales; los montos son enteros de pesos colombianos (sin centavos); un retiro valida el cupo del corresponsal; la red opera de 6:00 a 21:00; los puntos tienen conectividad intermitente, así que toda operación debe ser idempotente; nunca uses datos reales de clientes. Formato de reglas, conciso.">Copiar</button>
+            <pre><code>Crea .kiro/steering/producto-corresponsales.md con el
+contexto de negocio del proyecto: qué es Fundación de la
+Mujer, los tipos de transacción, y las reglas invariantes
+(montos enteros, cupo, horario 6-21, idempotencia, nada de
+datos reales). Formato de reglas, conciso.</code></pre>
+          </div>
+        </div>
+
+        <div class="prompt-item">
+          <div class="prompt-cabecera"><span class="prompt-n">3</span> Estándares técnicos y de infraestructura</div>
+          <div class="bloque-codigo">
+            <button class="btn-copiar" data-copy="Crea dos steering files más: estandares-desarrollo.md (Node.js 22, tests con Jest en tests/, comentarios en español, montos en enteros de pesos, y que al terminar un cambio me indiques el comando para verificarlo) y estandares-iac.md con inclusión condicional fileMatch para *.yaml, *.yml y *.tf (CloudFormation, tags obligatorios, cifrado en reposo, roles IAM con permisos mínimos).">Copiar</button>
+            <pre><code>Crea dos steering files más:
+- estandares-desarrollo.md (Node.js 22, Jest en tests/,
+  español, montos enteros, y que me digas el comando para
+  verificar cada cambio);
+- estandares-iac.md con inclusión fileMatch para *.yaml,
+  *.yml y *.tf (CloudFormation, tags, cifrado, IAM mínimo).</code></pre>
+          </div>
+          <div class="callout callout-exito"><strong>La prueba:</strong> pídele ahora “agrega una función que aplique 19% de IVA a la comisión”. Sin decirle nada más, debería documentar en español, redondear a pesos enteros y ofrecerte los tests. Eso es el steering trabajando solo.</div>
+        </div>
+
+        <div class="lab-llevar">💡 <strong>Para llevar:</strong> lo que repites en cada prompt va en un steering file; el contexto de negocio es lo que Kiro no puede adivinar solo.</div>
+      </article>
+
+      <!-- Lab 3 -->
+      <article class="lab">
+        <div class="lab-head">
+          <span class="lab-badge s1">Lab 3</span>
+          <div>
+            <h3>Hooks: calidad automática</h3>
+            <p class="lab-dur">≈ 18 minutos · 2 prompts</p>
+          </div>
+        </div>
+        <p class="lab-obj"><strong>Objetivo:</strong> automatizar cosas que hoy dependen de que alguien
+          se acuerde: que el revisor de estilo corra, y que nadie toque la tabla de tarifas sin darse
+          cuenta.</p>
+
+        <div class="prompt-item">
+          <div class="prompt-cabecera"><span class="prompt-n">1</span> Revisar el estilo al guardar (sin costo)</div>
+          <div class="bloque-codigo">
+            <button class="btn-copiar" data-copy="Crea un hook en .kiro/hooks/lint-al-guardar.json que cuando guarde un archivo .js en src/ o tests/ ejecute npm run lint. Debe ser de tipo comando, no de tipo agente, para que no consuma créditos.">Copiar</button>
+            <pre><code>Crea un hook en .kiro/hooks/lint-al-guardar.json que al
+guardar un archivo .js en src/ o tests/ ejecute npm run lint.
+De tipo comando (no agente), para que no consuma créditos.</code></pre>
+          </div>
+        </div>
+
+        <div class="prompt-item">
+          <div class="prompt-cabecera"><span class="prompt-n">2</span> Proteger lo sensible (un guardarraíl)</div>
+          <p>Primero copia el script de apoyo (te lo damos hecho):</p>
+          <div class="bloque-codigo">
+            <button class="btn-copiar" data-copy="cp soluciones/hooks/proteger-tarifas.sh .kiro/hooks/ && chmod +x .kiro/hooks/proteger-tarifas.sh">Copiar</button>
+            <pre><code>cp soluciones/hooks/proteger-tarifas.sh .kiro/hooks/
+chmod +x .kiro/hooks/proteger-tarifas.sh</code></pre>
+          </div>
+          <div class="bloque-codigo">
+            <button class="btn-copiar" data-copy="Crea un hook en .kiro/hooks/proteger-tarifas.json con trigger PreToolUse, un matcher para las herramientas de escritura de archivos, y una acción de tipo comando que ejecute: bash .kiro/hooks/proteger-tarifas.sh">Copiar</button>
+            <pre><code>Crea un hook en .kiro/hooks/proteger-tarifas.json con trigger
+PreToolUse, un matcher para las herramientas de escritura, y
+una acción de comando que ejecute:
+bash .kiro/hooks/proteger-tarifas.sh</code></pre>
+          </div>
+          <p class="inline-nota">Pruébalo pidiéndole cambiar una tarifa: Kiro debe pedirte confirmación antes de tocar <code>tarifas.js</code>. Rechaza el cambio.</p>
+        </div>
+
+        <div class="lab-llevar">💡 <strong>Para llevar:</strong> si un comando puede hacerlo, que lo haga un comando (cuesta cero); los guardarraíles son lo que te deja trabajar rápido sin miedo.</div>
+      </article>
+
+      <!-- Lab 4 -->
+      <article class="lab">
+        <div class="lab-head">
+          <span class="lab-badge s1">Lab 4</span>
+          <div>
+            <h3>MCP: Kiro conectado a AWS</h3>
+            <p class="lab-dur">≈ 18 minutos · 2 prompts</p>
+          </div>
+        </div>
+        <p class="lab-obj"><strong>Objetivo:</strong> conectar Kiro a fuentes oficiales de AWS para que
+          consulte documentación real en vez de responder “de memoria”.</p>
+        <p class="lab-porque">Los servicios de la nube cambian cada semana. MCP hace que Kiro consulte
+          y luego responda, con enlaces que puedes verificar.</p>
+
+        <div class="prompt-item">
+          <div class="prompt-cabecera"><span class="prompt-n">1</span> Conectar los servidores</div>
+          <div class="bloque-codigo">
+            <button class="btn-copiar" data-copy="Crea .kiro/settings/mcp.json con dos servidores MCP de AWS ejecutados vía uvx: awslabs.aws-documentation-mcp-server@latest (nombre aws-docs) y awslabs.aws-iac-mcp-server@latest (nombre aws-iac). Para ambos: FASTMCP_LOG_LEVEL en ERROR, disabled en false, autoApprove como lista vacía.">Copiar</button>
+            <pre><code>Crea .kiro/settings/mcp.json con dos servidores MCP de AWS
+vía uvx: aws-documentation-mcp-server (aws-docs) y
+aws-iac-mcp-server (aws-iac). Para ambos FASTMCP_LOG_LEVEL
+en ERROR, disabled false, autoApprove vacío.</code></pre>
+          </div>
+        </div>
+
+        <div class="prompt-item">
+          <div class="prompt-cabecera"><span class="prompt-n">2</span> Consultar documentación oficial</div>
+          <div class="bloque-codigo">
+            <button class="btn-copiar" data-copy="Consultando la documentación oficial de AWS, dime qué propiedades son obligatorias para crear una tabla de DynamoDB con CloudFormation y cómo se configura el cifrado en reposo. Cita las páginas que usaste.">Copiar</button>
+            <pre><code>Consultando la documentación oficial de AWS, dime qué
+propiedades son obligatorias para crear una tabla de DynamoDB
+con CloudFormation y cómo se configura el cifrado en reposo.
+Cita las páginas que usaste.</code></pre>
+          </div>
+          <p class="inline-nota">Observa que Kiro consulta el servidor antes de responder, y que la respuesta trae enlaces reales. Esto habilita el clímax de la Sesión 2.</p>
+        </div>
+
+        <div class="lab-llevar">💡 <strong>Para llevar:</strong> MCP cambia “recuerdo que…” por “consulté y esto dice”. Es lo que hace el resultado verificable y auditable.</div>
+      </article>
+    </section>
+
+    <!-- ============ SESIÓN 2 ============ -->
+    <section id="sesion2" class="seccion seccion-sesion s2">
+      <div class="sesion-hero s2">
+        <div class="sesion-hero-num">Sesión 2 · 2 horas</div>
+        <h2>Llevarlo a la nube (AWS)</h2>
+        <p class="seccion-intro">
+          Ahora convertimos el código en un servicio real en la nube: la infraestructura, la puesta
+          en producción automatizada y la documentación operativa. Todo <strong>generado y validado</strong>
+          antes de encender nada.
+        </p>
+        <div class="sesion-meta">
+          <span>🧪 3 laboratorios</span>
+          <span>☁️ CloudFormation + validación</span>
+          <span>💡 No creamos recursos reales</span>
+        </div>
+      </div>
+
+      <!-- Arquitectura objetivo -->
+      <div class="arq-box">
+        <h3>La arquitectura que vamos a generar</h3>
+        <div class="mermaid">
+flowchart TD
+    P["Punto corresponsal"] --> API["API Gateway"]
+    API --> L["Lambda<br/>registrar-transaccion"]
+    L --> D["DynamoDB<br/>(idempotencia)"]
+    L --> Q["SQS + DLQ<br/>(liquidaciones)"]
+    L --> S["SSM Parameter Store<br/>(tarifas)"]
+    L --> C["CloudWatch<br/>(logs + alarmas)"]
+        </div>
+        <p class="nota-tenue">La pieza clave es la <strong>idempotencia</strong>: si un punto rural
+          reintenta por mala señal, la transacción no se duplica. Es el problema que quedó pendiente
+          en la Sesión 1 y que aquí se resuelve bien.</p>
+      </div>
+
+      <!-- Lab 5 -->
+      <article class="lab lab-climax">
+        <div class="lab-head">
+          <span class="lab-badge s2">Lab 5 · ⭐</span>
+          <div>
+            <h3>Infraestructura generada y validada</h3>
+            <p class="lab-dur">≈ 34 minutos · 6 prompts · el corazón de la sesión</p>
+          </div>
+        </div>
+        <p class="lab-obj"><strong>Objetivo:</strong> convertir la lógica de negocio en una plantilla
+          de infraestructura completa, segura y <strong>validada</strong>, sin escribir el código de
+          la nube a mano.</p>
+
+        <div class="prompt-item">
+          <div class="prompt-cabecera"><span class="prompt-n">1</span> Leer el adaptador (viene hecho)</div>
+          <p>Abre <code>src/handlers/registrarTransaccion.js</code>. No lo generas: lo lees para ver
+            dos cosas que después aparecen en la plantilla: que el adaptador no duplica la lógica de
+            negocio, y que la <strong>idempotencia son dos pasos</strong> (consultar, y escribir con
+            condición). Es lo que le faltaba al código en la Sesión 1.</p>
+        </div>
+
+        <div class="prompt-item">
+          <div class="prompt-cabecera"><span class="prompt-n">2</span> Generar la plantilla</div>
+          <div class="bloque-codigo">
+            <button class="btn-copiar" data-copy="Consultando la documentación oficial de AWS a través del servidor MCP, genera infra/cloudformation/corresponsales.yaml: API Gateway REST con POST /transacciones y API key; Lambda registrar-transaccion en Node.js 22; tabla DynamoDB con clave de partición referenciaIdempotencia, cifrado y point-in-time recovery; cola SQS con dead letter queue; parámetro SSM para tarifas; log group con retención; rol IAM con permisos mínimos. Parameters para NombreProyecto y Ambiente; Outputs con la URL de la API. Sigue los estándares de infraestructura del proyecto. Comentarios en español.">Copiar</button>
+            <pre><code>Consultando la documentación oficial de AWS vía MCP, genera
+infra/cloudformation/corresponsales.yaml con: API Gateway
+REST (POST /transacciones, API key), Lambda Node.js 22,
+DynamoDB (clave referenciaIdempotencia, cifrado, PITR),
+SQS + DLQ, parámetro SSM de tarifas, log group con
+retención y rol IAM con permisos mínimos. Parameters para
+proyecto y ambiente, Outputs con la URL. Sigue los
+estándares del proyecto. Comentarios en español.</code></pre>
+          </div>
+          <p class="inline-nota">Fíjate en lo que agregó <em>sin que lo pidieras</em>: los tags, el cifrado, la retención de logs. Eso viene del steering que creaste en el Lab 2.</p>
+        </div>
+
+        <div class="prompt-item">
+          <div class="prompt-cabecera"><span class="prompt-n">3</span> Validar la sintaxis</div>
+          <div class="bloque-codigo">
+            <button class="btn-copiar" data-copy="Valida infra/cloudformation/corresponsales.yaml con el servidor MCP de IaC. Muéstrame los errores y advertencias con su número de línea.">Copiar</button>
+            <pre><code>Valida infra/cloudformation/corresponsales.yaml con el
+servidor MCP de IaC. Muéstrame los errores y advertencias
+con su número de línea.</code></pre>
+          </div>
+        </div>
+
+        <div class="prompt-item">
+          <div class="prompt-cabecera"><span class="prompt-n">4</span> Validar seguridad y corregir en ciclo</div>
+          <div class="bloque-codigo">
+            <button class="btn-copiar" data-copy="Ahora revisa el cumplimiento de seguridad de la plantilla, corrige los errores de sintaxis y las violaciones críticas, y vuelve a correr las dos validaciones hasta que pasen. Para las violaciones que no apliquen a este servicio, agrega un comentario explicando por qué.">Copiar</button>
+            <pre><code>Revisa el cumplimiento de seguridad, corrige los errores y
+las violaciones críticas, y vuelve a validar hasta que pase.
+Para lo que no aplique, deja un comentario explicando por qué.</code></pre>
+          </div>
+          <div class="callout callout-exito"><strong>Este es el momento clave del workshop.</strong> Kiro no adivina qué está mal: se lo dice un validador, y corrige con esa información. Por eso el resultado es verificable y auditable, no un acto de fe.</div>
+        </div>
+
+        <div class="prompt-item">
+          <div class="prompt-cabecera"><span class="prompt-n">5</span> Agregar monitoreo</div>
+          <div class="bloque-codigo">
+            <button class="btn-copiar" data-copy="Agrega a la plantilla alarmas de CloudWatch para: errores de la Lambda, duración cerca del timeout, throttling, mensajes en la dead letter queue, errores 5xx y latencia alta de la API. Los umbrales deben venir de Parameters. Agrega un tópico SNS de notificación. Después dame una tabla que explique, para cada alarma, qué significa en términos de negocio y qué debe hacer quien la reciba. Vuelve a validar.">Copiar</button>
+            <pre><code>Agrega alarmas de CloudWatch (errores, duración, throttling,
+mensajes en DLQ, 5xx y latencia), con umbrales en Parameters
+y un tópico SNS. Dame una tabla con qué significa cada alarma
+para el negocio y qué hacer. Vuelve a validar.</code></pre>
+          </div>
+        </div>
+
+        <div class="prompt-item">
+          <div class="prompt-cabecera"><span class="prompt-n">6</span> Documentar la arquitectura</div>
+          <div class="bloque-codigo">
+            <button class="btn-copiar" data-copy="Genera docs/ARQUITECTURA.md leyendo la plantilla real (no desde supuestos): diagrama, tabla de recursos con su propósito de negocio, cómo se resuelve la idempotencia, tabla de alarmas y qué falta para llevar esto a producción. En español, directo.">Copiar</button>
+            <pre><code>Genera docs/ARQUITECTURA.md leyendo la plantilla real:
+diagrama, tabla de recursos con su propósito, cómo se
+resuelve la idempotencia, tabla de alarmas y qué falta para
+producción. En español, directo.</code></pre>
+          </div>
+        </div>
+
+        <div class="lab-llevar">💡 <strong>Para llevar:</strong> el validador es la fuente de verdad, no el modelo. Distinguir un hallazgo crítico del ruido sigue siendo criterio humano, y ahora tienes tiempo para eso porque no lo gastaste escribiendo YAML.</div>
+      </article>
+
+      <!-- Lab 6 -->
+      <article class="lab">
+        <div class="lab-head">
+          <span class="lab-badge s2">Lab 6</span>
+          <div>
+            <h3>El pipeline que valida siempre</h3>
+            <p class="lab-dur">≈ 20 minutos · 3 prompts</p>
+          </div>
+        </div>
+        <p class="lab-obj"><strong>Objetivo:</strong> convertir la validación que hiciste a mano en una
+          condición del proyecto (se valida sola en cada cambio) y generar el manual de operación.</p>
+
+        <div class="prompt-item">
+          <div class="prompt-cabecera"><span class="prompt-n">1</span> Validación automática de la infraestructura</div>
+          <div class="bloque-codigo">
+            <button class="btn-copiar" data-copy="Genera .github/workflows/validar-infra.yml, un flujo de GitHub Actions que se ejecute solo cuando cambien archivos bajo infra/, instale cfn-lint (con versión fijada) y valide todas las plantillas de infra/cloudformation/, falle si hay errores, y publique el resultado como resumen. No requiere credenciales de AWS: es validación local. Permisos mínimos.">Copiar</button>
+            <pre><code>Genera .github/workflows/validar-infra.yml que, solo cuando
+cambie infra/, instale cfn-lint y valide las plantillas de
+infra/cloudformation/, falle si hay errores y publique el
+resultado. Sin credenciales de AWS (validación local),
+permisos mínimos.</code></pre>
+          </div>
+          <div class="callout callout-info"><strong>Detalle clave:</strong> validar una plantilla no necesita credenciales; desplegarla, sí. Confundir esas dos etapas es un error común y una fuente de riesgo.</div>
+        </div>
+
+        <div class="prompt-item">
+          <div class="prompt-cabecera"><span class="prompt-n">2</span> El manual de operación (runbook)</div>
+          <div class="bloque-codigo">
+            <button class="btn-copiar" data-copy="Genera docs/RUNBOOK.md leyendo la plantilla y el handler: descripción del servicio y su impacto si se cae, tabla de alarmas, y procedimiento paso a paso para cada escenario de falla (la Lambda lanza errores, la DLQ acumula mensajes, un corresponsal reporta una transacción duplicada, un retiro válido fue rechazado). Incluye cómo cambiar una tarifa sin desplegar y el procedimiento de rollback. En español, con comandos concretos.">Copiar</button>
+            <pre><code>Genera docs/RUNBOOK.md leyendo la plantilla y el handler:
+qué hace el servicio, tabla de alarmas y procedimiento para
+cada falla (errores de Lambda, DLQ llena, transacción
+duplicada, retiro válido rechazado), cómo cambiar una tarifa
+sin desplegar y el rollback. Español, comandos concretos.</code></pre>
+          </div>
+        </div>
+
+        <div class="prompt-item">
+          <div class="prompt-cabecera"><span class="prompt-n">3</span> Probar el runbook</div>
+          <div class="bloque-codigo">
+            <button class="btn-copiar" data-copy="Evalúa el runbook que generaste: ¿alguien que no conoce este servicio podría seguirlo a las 2 de la mañana sin llamar a nadie? Dime qué pasos son demasiado vagos y reescríbelos con comandos y valores concretos.">Copiar</button>
+            <pre><code>Evalúa el runbook: ¿alguien que no conoce el servicio podría
+seguirlo a las 2 de la mañana sin llamar a nadie? Dime qué
+pasos son vagos y reescríbelos con comandos concretos.</code></pre>
+          </div>
+        </div>
+
+        <div class="lab-llevar">💡 <strong>Para llevar:</strong> validar a mano depende de la memoria; el pipeline no. El steering evita el error; el pipeline lo detecta si igual ocurrió.</div>
+      </article>
+
+      <!-- Lab 7 -->
+      <article class="lab lab-reto">
+        <div class="lab-head">
+          <span class="lab-badge s2">Lab 7 · 🏆</span>
+          <div>
+            <h3>Reto integrador por equipos</h3>
+            <p class="lab-dur">≈ 22 minutos · en equipos de 2 o 3</p>
+          </div>
+        </div>
+        <p class="lab-obj"><strong>El escenario:</strong> la red va a habilitar <strong>giros
+          nacionales</strong>. Un cliente entrega efectivo en un punto y el beneficiario lo retira en
+          otro. Con todo lo aprendido, tu equipo lo implementa.</p>
+
+        <div class="reto-reglas">
+          <h4>Reglas del giro</h4>
+          <ul>
+            <li>Tipo <code>GIRO</code>, comisión de $2.000 fijos + 0,5% del monto, límite $1.500.000</li>
+            <li>El cupo se valida en el punto <strong>de pago</strong>, no en el de origen</li>
+            <li>Queda en estado <code>PENDIENTE_COBRO</code> hasta que el beneficiario lo retira</li>
+            <li>Operaciones necesita consultar los giros pendientes de un corresponsal</li>
+          </ul>
+        </div>
+
+        <div class="reto-entregables">
+          <div class="reto-e"><span class="reto-e-num">1</span> Tarifa y límite del nuevo tipo <span class="reto-pts">3 pts</span></div>
+          <div class="reto-e"><span class="reto-e-num">2</span> Lógica del giro con sus tests de borde <span class="reto-pts">4 pts</span></div>
+          <div class="reto-e"><span class="reto-e-num">3</span> Consulta de pendientes en la infraestructura <span class="reto-pts">3 pts</span></div>
+        </div>
+
+        <div class="callout callout-info">
+          <strong>La clave para ganar:</strong> decidir cómo modelar el giro <em>antes</em> de generar,
+          y reutilizar lo que ya existe en lugar de duplicarlo. Los dos primeros minutos de diseño
+          valen más que quince de generar a ciegas.
+        </div>
+
+        <div class="lab-llevar">💡 <strong>Para llevar:</strong> reutilizar en vez de duplicar es el criterio que más pesa. Parcial y verificado vale más que completo y roto.</div>
+      </article>
+
+      <!-- Cierre -->
+      <div class="cierre-box">
+        <img src="assets/logo-kiro.svg" alt="Kiro" class="cierre-kiro" />
+        <h3>Al terminar las dos sesiones</h3>
+        <p>Kiro no reemplaza el criterio del equipo: lo libera del trabajo que no lo necesitaba.
+          Las cuatro horas no fueron sobre escribir código más rápido, sino sobre dejar de posponer
+          lo que siempre queda para después: documentar, probar los bordes, escribir el manual de
+          operación, validar la infraestructura antes de encenderla.</p>
+        <p class="cierre-frase">Esa es la parte del trabajo que decide si un servicio se puede operar
+          y auditar. Ahora tienen cómo hacerla sin que cueste una semana.</p>
+      </div>
+    </section>
+
     <footer class="pie">
       <div class="pie-cliente">
         <img src="assets/logo-cliente.png" alt="Fundación de la Mujer" />
@@ -560,6 +1008,22 @@ npm install</code></pre>
 
   </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: 'base',
+        themeVariables: {
+          primaryColor: '#151d26',
+          primaryTextColor: '#e8edf2',
+          primaryBorderColor: '#00c19f',
+          lineColor: '#6b7c8c',
+          fontFamily: 'Inter, sans-serif'
+        }
+      });
+    }
+  </script>
   <script src="app.js"></script>
 </body>
 </html>
