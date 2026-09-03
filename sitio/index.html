@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Workshop Kiro · Fundación de la Mujer</title>
+  <meta name="description" content="Guía interactiva del Workshop de Kiro para Fundación de la Mujer. Por Escala 24x7." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- Barra de progreso superior -->
+  <div class="barra-progreso" aria-hidden="true"><div class="barra-progreso-relleno" id="barraProgreso"></div></div>
+
+  <!-- Botón de menú para móvil -->
+  <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">☰</button>
+
+  <!-- Navegación lateral -->
+  <aside class="nav-lateral" id="navLateral">
+    <div class="nav-marca">
+      <img src="assets/logo-escala.png" alt="Escala 24x7" class="nav-logo-escala" />
+      <span class="nav-sep"></span>
+      <img src="assets/logo-aws.png" alt="powered by AWS" class="nav-logo-aws" />
+    </div>
+
+    <nav aria-label="Secciones del workshop">
+      <p class="nav-grupo">Antes de empezar</p>
+      <a href="#inicio" class="nav-link" data-seccion="inicio">Inicio</a>
+      <a href="#valor" class="nav-link" data-seccion="valor">Por qué importa</a>
+      <a href="#agenda" class="nav-link" data-seccion="agenda">Qué haremos</a>
+      <p class="nav-grupo">Preparación</p>
+      <a href="#requisitos" class="nav-link" data-seccion="requisitos">Requisitos</a>
+      <a href="#instalacion" class="nav-link" data-seccion="instalacion">Instalación paso a paso</a>
+      <a href="#checklist" class="nav-link" data-seccion="checklist">Lista de verificación</a>
+      <a href="#problemas" class="nav-link" data-seccion="problemas">Si algo falla</a>
+    </nav>
+
+    <div class="nav-pie">
+      <div class="nav-progreso-texto"><span id="progresoTexto">0%</span> completado</div>
+      <button class="btn-reset" id="btnReset" title="Reiniciar mi progreso">Reiniciar progreso</button>
+    </div>
+  </aside>
+
+  <!-- Contenido principal -->
+  <main class="contenido" id="contenido">
+
+    <!-- ============ PORTADA ============ -->
+    <section id="inicio" class="seccion portada">
+      <div class="portada-fondo" aria-hidden="true"></div>
+      <div class="portada-contenido">
+        <div class="portada-logos">
+          <img src="assets/logo-escala.png" alt="Escala 24x7" class="portada-logo-escala" />
+          <span class="portada-logo-div"></span>
+          <img src="assets/logo-aws.png" alt="powered by AWS" class="portada-logo-aws" />
+        </div>
+        <p class="portada-kicker">Workshop práctico · 2 sesiones</p>
+        <h1 class="portada-titulo">Kiro para <span class="acento">Fundación de la Mujer</span></h1>
+        <p class="portada-sub">Construir software de calidad, más rápido, con inteligencia artificial.</p>
+        <p class="portada-lead">
+          Bienvenido y bienvenida. Esta es tu guía completa para las dos sesiones del workshop:
+          qué preparar, cómo instalar todo paso a paso, y qué haremos en cada sesión.
+        </p>
+        <div class="portada-cta">
+          <a href="#requisitos" class="btn btn-primario">Comenzar preparación →</a>
+          <a href="#valor" class="btn btn-secundario">¿Por qué importa?</a>
+        </div>
+        <div class="portada-nota">
+          <strong>¿No trabajas en tecnología?</strong> No importa. Esta guía está escrita para que
+          cualquier persona la siga, aunque nunca haya abierto una “terminal”. Si algo no se entiende,
+          es culpa de la guía, no tuya.
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ VALOR DE NEGOCIO ============ -->
+    <section id="valor" class="seccion">
+      <span class="seccion-eyebrow">Por qué importa</span>
+      <h2>El valor para el negocio</h2>
+      <p class="seccion-intro">
+        Antes de lo técnico, lo importante: <strong>¿qué gana la organización con esto?</strong>
+        Kiro usa inteligencia artificial para ayudar a construir software. No reemplaza a las
+        personas: hace que el equipo produzca más y mejor, en menos tiempo.
+      </p>
+
+      <div class="tarjetas">
+        <div class="tarjeta">
+          <div class="tarjeta-icono">🚀</div>
+          <h3>Time-to-market</h3>
+          <p>Lo que tomaba semanas se acorta a días. Una idea nueva se prueba y se lanza antes que la competencia.</p>
+        </div>
+        <div class="tarjeta">
+          <div class="tarjeta-icono">📈</div>
+          <h3>Crecimiento</h3>
+          <p>El equipo dedica su tiempo a resolver problemas del negocio, no tareas repetitivas. Más capacidad sin contratar más gente.</p>
+        </div>
+        <div class="tarjeta">
+          <div class="tarjeta-icono">✅</div>
+          <h3>Calidad</h3>
+          <p>La IA ayuda a documentar, probar y validar. Menos errores llegan a producción, menos incidentes que atender.</p>
+        </div>
+        <div class="tarjeta">
+          <div class="tarjeta-icono">🔄</div>
+          <h3>Continuidad</h3>
+          <p>El conocimiento queda escrito y compartido, no en la cabeza de una sola persona. Si alguien se va, el proyecto no se detiene.</p>
+        </div>
+        <div class="tarjeta">
+          <div class="tarjeta-icono">💰</div>
+          <h3>Costo</h3>
+          <p>Menos horas en tareas mecánicas significa menos costo por entrega. La documentación que “nunca hay tiempo de hacer” se genera sola.</p>
+        </div>
+        <div class="tarjeta">
+          <div class="tarjeta-icono">💜</div>
+          <h3>Inclusión digital</h3>
+          <p>Llegar más rápido con mejores servicios digitales acerca la inclusión financiera a más mujeres, en más lugares.</p>
+        </div>
+      </div>
+
+      <blockquote class="cita">
+        La idea de fondo: el software es cada vez más el motor del crecimiento de cualquier
+        organización. Quien construye software más rápido y con más calidad, crece más rápido.
+        <strong>Kiro es una palanca directa sobre esa velocidad.</strong>
+      </blockquote>
+    </section>
+
+    <!-- ============ AGENDA ============ -->
+    <section id="agenda" class="seccion">
+      <span class="seccion-eyebrow">Qué haremos</span>
+      <h2>Dos sesiones, dos usos de la herramienta</h2>
+      <p class="seccion-intro">
+        Todo sobre un ejemplo real y cercano: el servicio que autoriza las transacciones de una
+        red de corresponsales (esos comercios de barrio donde uno hace un retiro o paga una cuota
+        sin ir a una oficina).
+      </p>
+
+      <div class="sesiones-grid">
+        <div class="sesion-card sesion-1">
+          <div class="sesion-num">Sesión 1</div>
+          <h3>Construir mejor y más rápido</h3>
+          <ul>
+            <li>Entender un proyecto en minutos</li>
+            <li>Enseñarle a Kiro las reglas del equipo</li>
+            <li>Automatizar tareas repetitivas</li>
+            <li>Conectar Kiro a información confiable</li>
+          </ul>
+        </div>
+        <div class="sesion-card sesion-2">
+          <div class="sesion-num">Sesión 2</div>
+          <h3>Llevarlo a la nube (AWS)</h3>
+          <ul>
+            <li>Generar la infraestructura de la nube</li>
+            <li>Automatizar la puesta en producción</li>
+            <li>Dejar todo documentado y monitoreado</li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="nota-tenue">
+        El ejemplo es a propósito sencillo, para que la atención esté en <em>cómo se usa Kiro</em>,
+        no en entender un negocio complicado. El detalle técnico de cada sesión lo verás en el
+        workshop; esta guía te prepara para llegar listo.
+      </p>
+    </section>
+
+    <!-- ============ REQUISITOS ============ -->
+    <section id="requisitos" class="seccion">
+      <span class="seccion-eyebrow">Preparación · Paso 1</span>
+      <h2>Qué necesitas tener listo</h2>
+      <p class="seccion-intro">
+        Dedica unos 45 minutos <strong>antes</strong> del workshop a dejar todo preparado. Si llegas
+        el día con las herramientas instaladas, aprovechas cada minuto de las sesiones.
+      </p>
+
+      <div class="req-tabla">
+        <div class="req-fila req-cabecera">
+          <span>Herramienta</span><span>En una frase</span><span>Obligatoria</span>
+        </div>
+        <div class="req-fila">
+          <span><strong>Kiro</strong></span>
+          <span>El programa principal, con el que trabajarás todo el workshop</span>
+          <span class="badge badge-si">Sí</span>
+        </div>
+        <div class="req-fila">
+          <span><strong>Cuenta de Kiro</strong></span>
+          <span>Tu acceso gratuito. Como crear una cuenta de correo</span>
+          <span class="badge badge-si">Sí</span>
+        </div>
+        <div class="req-fila">
+          <span><strong>Git</strong></span>
+          <span>Sirve para descargar el material del workshop a tu computador</span>
+          <span class="badge badge-si">Sí</span>
+        </div>
+        <div class="req-fila">
+          <span><strong>Node.js</strong></span>
+          <span>Hace funcionar el proyecto de ejemplo</span>
+          <span class="badge badge-si">Sí</span>
+        </div>
+        <div class="req-fila">
+          <span><strong>uv</strong></span>
+          <span>Conecta a Kiro con la documentación de AWS</span>
+          <span class="badge badge-si">Sí</span>
+        </div>
+        <div class="req-fila">
+          <span><strong>Cuenta de AWS</strong></span>
+          <span>Solo si quieres explorar más. No es obligatoria</span>
+          <span class="badge badge-no">Opcional</span>
+        </div>
+      </div>
+
+      <div class="callout callout-info">
+        <strong>¿Qué es una “terminal”?</strong> Es una ventanita donde uno le escribe instrucciones
+        al computador en texto, en lugar de usar el mouse. Suena intimidante pero solo vas a copiar y
+        pegar lo que esta guía te indique.
+      </div>
+
+      <div class="callout callout-exito">
+        <strong>Consejo sobre la cuenta gratuita:</strong> crea tu cuenta de Kiro <strong>dentro de
+        los 14 días previos</strong> al workshop. Las cuentas nuevas reciben créditos de bienvenida
+        adicionales, válidos por dos semanas, que te dan margen de sobra durante las sesiones.
+      </div>
+    </section>
+
+    <!-- ============ INSTALACIÓN ============ -->
+    <section id="instalacion" class="seccion">
+      <span class="seccion-eyebrow">Preparación · Paso 2</span>
+      <h2>Guía de instalación paso a paso</h2>
+      <p class="seccion-intro">
+        Sigue los pasos en orden y marca cada uno cuando lo completes. Tu avance se guarda solo en
+        este navegador. Elige tu sistema operativo:
+      </p>
+
+      <!-- Selector de sistema operativo -->
+      <div class="so-selector" role="tablist" aria-label="Sistema operativo">
+        <button class="so-btn activo" data-so="windows" role="tab">🪟 Windows</button>
+        <button class="so-btn" data-so="mac" role="tab">🍎 Mac</button>
+      </div>
+
+      <!-- Paso: abrir la terminal -->
+      <article class="paso" data-paso="terminal">
+        <header class="paso-header">
+          <label class="paso-check">
+            <input type="checkbox" class="chk" data-id="p-terminal" />
+            <span class="paso-numero">0</span>
+          </label>
+          <h3>Aprende a abrir la terminal</h3>
+        </header>
+        <div class="paso-cuerpo">
+          <div class="so-contenido" data-so="windows">
+            <p>Presiona la tecla <span class="tecla">Windows</span>, escribe <code>PowerShell</code>
+              y da clic en <strong>Windows PowerShell</strong>. Se abre una ventana con texto: esa es
+              la terminal.</p>
+          </div>
+          <div class="so-contenido oculto" data-so="mac">
+            <p>Presiona <span class="tecla">⌘ Command</span> + <span class="tecla">Espacio</span>,
+              escribe <code>Terminal</code> y presiona <span class="tecla">Enter</span>. Se abre una
+              ventana con texto: esa es la terminal.</p>
+          </div>
+          <div class="callout callout-tenue">
+            <strong>Truco:</strong> cuando te pidamos “escribe este comando”, puedes copiarlo con el
+            botón <span class="mini-copy">Copiar</span>, pegarlo en la terminal y presionar Enter. No
+            hace falta teclearlo.
+          </div>
+        </div>
+      </article>
+
+      <!-- Paso 1: Kiro -->
+      <article class="paso" data-paso="kiro">
+        <header class="paso-header">
+          <label class="paso-check">
+            <input type="checkbox" class="chk" data-id="p-kiro" />
+            <span class="paso-numero">1</span>
+          </label>
+          <h3>Instalar Kiro</h3>
+        </header>
+        <div class="paso-cuerpo">
+          <ol class="lista-pasos">
+            <li>Abre tu navegador y ve a <a href="https://kiro.dev" target="_blank" rel="noopener">kiro.dev</a>.</li>
+            <li>Da clic en el botón de descarga (la página detecta tu sistema automáticamente).</li>
+            <li>Abre el archivo descargado e instálalo:
+              <div class="so-contenido" data-so="windows"><span class="inline-nota">Windows: doble clic en el archivo <code>.exe</code> y sigue el asistente (Siguiente → Instalar).</span></div>
+              <div class="so-contenido oculto" data-so="mac"><span class="inline-nota">Mac: abre el <code>.dmg</code> y arrastra el ícono de Kiro a la carpeta <strong>Aplicaciones</strong>.</span></div>
+            </li>
+            <li>Abre Kiro.</li>
+          </ol>
+          <div class="verificar">✔ <strong>Verifica:</strong> si Kiro abre y muestra su pantalla de inicio, este paso está listo.</div>
+        </div>
+      </article>
+
+      <!-- Paso 2: Cuenta -->
+      <article class="paso" data-paso="cuenta">
+        <header class="paso-header">
+          <label class="paso-check">
+            <input type="checkbox" class="chk" data-id="p-cuenta" />
+            <span class="paso-numero">2</span>
+          </label>
+          <h3>Crear tu cuenta e iniciar sesión</h3>
+        </header>
+        <div class="paso-cuerpo">
+          <p>Kiro es gratuito para empezar. Vas a crear un <strong>AWS Builder ID</strong>, una
+            identidad gratuita de AWS que no pide tarjeta de crédito.</p>
+          <ol class="lista-pasos">
+            <li>En la pantalla de inicio de Kiro, elige <strong>iniciar sesión con AWS Builder ID</strong>.</li>
+            <li>Se abre tu navegador. Da clic en <strong>crear un AWS Builder ID</strong>.</li>
+            <li>Escribe tu correo, tu nombre y una contraseña.</li>
+            <li>AWS te envía un código al correo. Cópialo y pégalo para confirmar.</li>
+            <li>Vuelve a Kiro: debería quedar conectado con tu cuenta.</li>
+          </ol>
+          <div class="verificar">✔ <strong>Verifica:</strong> abre el chat de Kiro y escribe el mensaje de abajo. Si responde, tu cuenta está lista.</div>
+          <div class="bloque-codigo">
+            <button class="btn-copiar" data-copy="Hola, responde en una línea para confirmar que estás funcionando.">Copiar</button>
+            <pre><code>Hola, responde en una línea para confirmar que estás funcionando.</code></pre>
+          </div>
+          <div class="callout callout-info">
+            <strong>Sobre los créditos:</strong> el plan gratuito incluye 50 créditos al mes y el
+            workshop consume entre 30 y 46. Alcanzan si llegas con la cuenta sin usar ese mes. Si tienes
+            dudas, pregúntale al facilitador antes del workshop.
+          </div>
+        </div>
+      </article>
+
+      <!-- Paso 3: Git -->
+      <article class="paso" data-paso="git">
+        <header class="paso-header">
+          <label class="paso-check">
+            <input type="checkbox" class="chk" data-id="p-git" />
+            <span class="paso-numero">3</span>
+          </label>
+          <h3>Instalar Git</h3>
+        </header>
+        <div class="paso-cuerpo">
+          <p>Git sirve para descargar el material del workshop a tu computador.</p>
+          <div class="so-contenido" data-so="windows">
+            <ol class="lista-pasos">
+              <li>Ve a <a href="https://git-scm.com/download/win" target="_blank" rel="noopener">git-scm.com/download/win</a>. La descarga empieza sola.</li>
+              <li>Abre el archivo y acepta todas las opciones por defecto (<strong>Next</strong> en cada pantalla → <strong>Install</strong>).</li>
+            </ol>
+            <div class="callout callout-tenue">
+              <strong>Dato útil:</strong> Git instala también <strong>Git Bash</strong>, una terminal
+              que hace que los comandos del workshop funcionen igual que en Mac. La vamos a usar.
+            </div>
+          </div>
+          <div class="so-contenido oculto" data-so="mac">
+            <p>En Mac, Git suele venir incluido. Para confirmarlo, abre la Terminal y escribe:</p>
+            <div class="bloque-codigo">
+              <button class="btn-copiar" data-copy="git --version">Copiar</button>
+              <pre><code>git --version</code></pre>
+            </div>
+            <p>Si muestra un número de versión, ya lo tienes. Si aparece una ventana ofreciendo instalar
+              las “herramientas de línea de comandos”, acéptala.</p>
+          </div>
+          <div class="verificar">✔ <strong>Verifica:</strong> en la terminal, <code>git --version</code> debe responder algo como <code>git version 2.40.0</code>.</div>
+        </div>
+      </article>
+
+      <!-- Paso 4: Node -->
+      <article class="paso" data-paso="node">
+        <header class="paso-header">
+          <label class="paso-check">
+            <input type="checkbox" class="chk" data-id="p-node" />
+            <span class="paso-numero">4</span>
+          </label>
+          <h3>Instalar Node.js</h3>
+        </header>
+        <div class="paso-cuerpo">
+          <p>Node.js hace funcionar el proyecto de ejemplo. Los pasos son iguales en Windows y Mac.</p>
+          <ol class="lista-pasos">
+            <li>Ve a <a href="https://nodejs.org" target="_blank" rel="noopener">nodejs.org</a>.</li>
+            <li>Descarga la versión que dice <strong>LTS</strong> (la estable y recomendada).</li>
+            <li>Abre el archivo e instálalo aceptando las opciones por defecto.</li>
+          </ol>
+          <div class="callout callout-tenue"><strong>Importante:</strong> cierra y vuelve a abrir la terminal después de instalar Node.</div>
+          <div class="verificar">✔ <strong>Verifica:</strong> <code>node --version</code> debe responder <code>v20</code> o superior.</div>
+          <div class="bloque-codigo">
+            <button class="btn-copiar" data-copy="node --version">Copiar</button>
+            <pre><code>node --version</code></pre>
+          </div>
+        </div>
+      </article>
+
+      <!-- Paso 5: uv -->
+      <article class="paso" data-paso="uv">
+        <header class="paso-header">
+          <label class="paso-check">
+            <input type="checkbox" class="chk" data-id="p-uv" />
+            <span class="paso-numero">5</span>
+          </label>
+          <h3>Instalar uv</h3>
+        </header>
+        <div class="paso-cuerpo">
+          <p><code>uv</code> permite a Kiro conectarse con la documentación de AWS. Copia y pega el
+            comando de tu sistema en la terminal:</p>
+          <div class="so-contenido" data-so="windows">
+            <div class="bloque-codigo">
+              <button class="btn-copiar" data-copy='powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"'>Copiar</button>
+              <pre><code>powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"</code></pre>
+            </div>
+          </div>
+          <div class="so-contenido oculto" data-so="mac">
+            <div class="bloque-codigo">
+              <button class="btn-copiar" data-copy="curl -LsSf https://astral.sh/uv/install.sh | sh">Copiar</button>
+              <pre><code>curl -LsSf https://astral.sh/uv/install.sh | sh</code></pre>
+            </div>
+            <p class="inline-nota">Si usas Homebrew, también sirve: <code>brew install uv</code></p>
+          </div>
+          <p>Cuando termine, cierra y vuelve a abrir la terminal.</p>
+          <div class="verificar">✔ <strong>Verifica:</strong> <code>uv --version</code> debe responder con un número de versión.</div>
+          <details class="desplegable">
+            <summary>Prueba extra recomendada (opcional pero útil)</summary>
+            <p>Este comando descarga por adelantado una herramienta que usaremos, para que el día del
+              workshop arranque rápido. Puede tardar un par de minutos la primera vez.</p>
+            <div class="bloque-codigo">
+              <button class="btn-copiar" data-copy="uvx awslabs.aws-documentation-mcp-server@latest --help">Copiar</button>
+              <pre><code>uvx awslabs.aws-documentation-mcp-server@latest --help</code></pre>
+            </div>
+            <p class="inline-nota">Si imprime un texto de ayuda (o se queda esperando, presiona
+              <strong>Ctrl + C</strong> para cortarlo), funcionó.</p>
+          </details>
+        </div>
+      </article>
+
+      <!-- Paso 6: descargar material -->
+      <article class="paso" data-paso="material">
+        <header class="paso-header">
+          <label class="paso-check">
+            <input type="checkbox" class="chk" data-id="p-material" />
+            <span class="paso-numero">6</span>
+          </label>
+          <h3>Descargar el material del workshop</h3>
+        </header>
+        <div class="paso-cuerpo">
+          <p>Trae este proyecto a tu computador. En <strong>Windows usa Git Bash</strong> (búscala en
+            el menú de inicio). Escribe los comandos uno por uno:</p>
+          <div class="bloque-codigo">
+            <button class="btn-copiar" data-copy="git clone [URL-DEL-REPOSITORIO] workshop-kiro-fdlm
+cd workshop-kiro-fdlm
+npm install">Copiar</button>
+            <pre><code>git clone [URL-DEL-REPOSITORIO] workshop-kiro-fdlm
+cd workshop-kiro-fdlm
+npm install</code></pre>
+          </div>
+          <p class="inline-nota">El facilitador te dará la <code>[URL-DEL-REPOSITORIO]</code> exacta.</p>
+          <div class="verificar">✔ <strong>Verifica:</strong> escribe <code>npm test</code>. Debe aparecer la palabra <strong>PASS</strong> y “11 passed”.</div>
+        </div>
+      </article>
+
+      <!-- Paso 7: abrir en Kiro -->
+      <article class="paso" data-paso="abrir">
+        <header class="paso-header">
+          <label class="paso-check">
+            <input type="checkbox" class="chk" data-id="p-abrir" />
+            <span class="paso-numero">7</span>
+          </label>
+          <h3>Abrir el proyecto en Kiro</h3>
+        </header>
+        <div class="paso-cuerpo">
+          <ol class="lista-pasos">
+            <li>Abre Kiro.</li>
+            <li>Ve a <strong>File → Open Folder</strong> (Archivo → Abrir carpeta).</li>
+            <li>Selecciona la carpeta <code>workshop-kiro-fdlm</code> que descargaste.</li>
+          </ol>
+          <div class="verificar">✔ <strong>Verifica:</strong> en el chat de Kiro, pregunta lo de abajo. Si responde con la ruta del proyecto, todo está listo.</div>
+          <div class="bloque-codigo">
+            <button class="btn-copiar" data-copy="¿En qué carpeta estoy trabajando?">Copiar</button>
+            <pre><code>¿En qué carpeta estoy trabajando?</code></pre>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ============ CHECKLIST FINAL ============ -->
+    <section id="checklist" class="seccion">
+      <span class="seccion-eyebrow">Preparación · Confirmación</span>
+      <h2>Lista de verificación final</h2>
+      <p class="seccion-intro">
+        Marca cada casilla. Si todas están marcadas, llegarás al workshop sin sorpresas. Este bloque
+        comparte el progreso con los pasos de instalación de arriba.
+      </p>
+
+      <div class="checklist">
+        <label class="check-item"><input type="checkbox" class="chk" data-id="c-kiro" /> <span>Kiro instalado y abre correctamente</span></label>
+        <label class="check-item"><input type="checkbox" class="chk" data-id="c-sesion" /> <span>Sesión iniciada en Kiro (responde en el chat)</span></label>
+        <label class="check-item"><input type="checkbox" class="chk" data-id="c-creditos" /> <span>Créditos revisados (al menos 45, o avisé al facilitador)</span></label>
+        <label class="check-item"><input type="checkbox" class="chk" data-id="c-git" /> <span><code>git --version</code> responde</span></label>
+        <label class="check-item"><input type="checkbox" class="chk" data-id="c-node" /> <span><code>node --version</code> responde con v20 o superior</span></label>
+        <label class="check-item"><input type="checkbox" class="chk" data-id="c-uv" /> <span><code>uv --version</code> responde</span></label>
+        <label class="check-item"><input type="checkbox" class="chk" data-id="c-material" /> <span>Material descargado y <code>npm test</code> en verde</span></label>
+        <label class="check-item"><input type="checkbox" class="chk" data-id="c-abrir" /> <span>Proyecto abierto en Kiro</span></label>
+      </div>
+
+      <div class="listo-banner" id="listoBanner">
+        🎉 <strong>¡Todo listo!</strong> Ya estás preparado para el workshop. Nos vemos en la Sesión 1.
+      </div>
+    </section>
+
+    <!-- ============ SOLUCIÓN DE PROBLEMAS ============ -->
+    <section id="problemas" class="seccion">
+      <span class="seccion-eyebrow">Ayuda</span>
+      <h2>Si algo no funcionó</h2>
+      <p class="seccion-intro">
+        No te frustres: estos tropiezos son normales y casi todos tienen solución rápida.
+      </p>
+
+      <details class="desplegable"><summary><code>command not found</code> o “no se reconoce”</summary>
+        <p>La terminal no encuentra el programa recién instalado. Cierra y vuelve a abrir la terminal.
+          Si sigue, reinicia el computador.</p></details>
+      <details class="desplegable"><summary>Kiro no responde en el chat</summary>
+        <p>La sesión se cerró. Vuelve a iniciar sesión con tu AWS Builder ID.</p></details>
+      <details class="desplegable"><summary>Kiro dice que no hay créditos</summary>
+        <p>Se agotó la cuota del mes. Avísale al facilitador: trabajarás en pareja o te asignan una licencia.</p></details>
+      <details class="desplegable"><summary><code>npm install</code> se queda pegado o falla</summary>
+        <p>Puede ser la red de tu oficina. Prueba desde otra red, o avisa a tu área de tecnología (puede haber un “proxy”).</p></details>
+      <details class="desplegable"><summary>No encuentro Git Bash en Windows</summary>
+        <p>Se instaló junto con Git. Búscalo en el menú de inicio escribiendo “Git Bash”.</p></details>
+
+      <div class="callout callout-exito">
+        <strong>Regla de oro:</strong> cuando algo falle, tómale una <strong>captura de pantalla</strong>
+        y compártela en el canal de soporte del workshop. Una imagen dice más que mil descripciones, y
+        el facilitador podrá ayudarte más rápido. Mejor resolverlo antes que el día de la sesión.
+      </div>
+
+      <div class="soporte-box">
+        <h3>Canal de soporte</h3>
+        <p>Facilitador: <strong>[POR DEFINIR]</strong> · Canal: <strong>[POR DEFINIR]</strong></p>
+      </div>
+    </section>
+
+    <footer class="pie">
+      <div class="pie-logos">
+        <img src="assets/logo-escala.png" alt="Escala 24x7" />
+        <img src="assets/logo-aws.png" alt="powered by AWS" />
+      </div>
+      <p>Workshop Kiro para Fundación de la Mujer · Preparado por Escala 24x7.</p>
+      <p class="pie-tenue">Los datos y ejemplos del workshop son ficticios y con fines educativos.</p>
+    </footer>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
