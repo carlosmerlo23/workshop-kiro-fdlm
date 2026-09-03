@@ -75,6 +75,11 @@ code {
 .nav-logo-escala { height: 30px; width: auto; }
 .nav-logo-aws { height: 22px; width: auto; opacity: .95; }
 .nav-sep { width: 1px; height: 24px; background: var(--borde); }
+.nav-cliente { margin-top: 14px; }
+.nav-cliente img {
+  height: 62px; width: auto; border-radius: 12px;
+  border: 1px solid var(--borde);
+}
 
 .nav-grupo {
   font-size: .72rem; text-transform: uppercase; letter-spacing: .09em;
@@ -154,9 +159,15 @@ code {
 .portada-logo-div { width: 1px; height: 34px; background: var(--borde); }
 .portada-kicker {
   color: var(--menta); font-weight: 600; font-size: .95rem;
-  letter-spacing: .04em; margin-bottom: 14px;
+  letter-spacing: .04em; margin-bottom: 20px;
 }
-.portada-titulo { font-size: 3.6rem; font-weight: 800; line-height: 1.05; letter-spacing: -.03em; margin-bottom: 18px; }
+.portada-cliente { margin-bottom: 26px; }
+.portada-cliente-logo {
+  height: 132px; width: auto; border-radius: 20px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.4);
+  border: 1px solid rgba(255,255,255,.08);
+}
+.portada-titulo { font-size: 3.2rem; font-weight: 800; line-height: 1.08; letter-spacing: -.03em; margin-bottom: 18px; }
 .portada-titulo .acento { color: var(--menta); }
 .portada-sub { font-size: 1.45rem; font-weight: 600; color: var(--texto); margin-bottom: 20px; }
 .portada-lead { font-size: 1.1rem; color: var(--texto-tenue); max-width: 620px; margin-bottom: 34px; }
@@ -306,6 +317,8 @@ code {
 
 /* ---------- Pie ---------- */
 .pie { max-width: 860px; margin: 0 auto; padding: 50px 40px; text-align: center; color: var(--texto-suave); }
+.pie-cliente { margin-bottom: 22px; }
+.pie-cliente img { height: 76px; width: auto; border-radius: 14px; box-shadow: 0 6px 20px rgba(0,0,0,.3); }
 .pie-logos { display: flex; justify-content: center; align-items: center; gap: 20px; margin-bottom: 20px; opacity: .8; }
 .pie-logos img:first-child { height: 28px; }
 .pie-logos img:last-child { height: 20px; }
@@ -320,8 +333,9 @@ code {
   .nav-lateral.abierto { transform: translateX(0); }
   .contenido { margin-left: 0; }
   .menu-toggle { display: block; }
-  .portada-titulo { font-size: 2.5rem; }
+  .portada-titulo { font-size: 2.3rem; }
   .portada-sub { font-size: 1.2rem; }
+  .portada-cliente-logo { height: 100px; }
   .seccion, .portada, .pie { padding-left: 22px; padding-right: 22px; }
   .sesiones-grid { grid-template-columns: 1fr; }
   .req-fila { grid-template-columns: 1fr; gap: 4px; }
