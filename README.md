@@ -291,7 +291,7 @@ workshop-kiro-fdlm/
 
 ```bash
 # 1. Clonar el repositorio
-git clone <URL-DEL-REPO> workshop-kiro-fdlm
+git clone https://github.com/carlosmerlo23/workshop-kiro-fdlm.git workshop-kiro-fdlm
 cd workshop-kiro-fdlm
 
 # 2. Instalar dependencias

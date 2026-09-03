@@ -188,7 +188,7 @@ aws sts get-caller-identity --profile workshop-kiro
 ## 7. Clonar y probar el proyecto base
 
 ```bash
-git clone <URL-DEL-REPO> workshop-kiro-fdlm
+git clone https://github.com/carlosmerlo23/workshop-kiro-fdlm.git workshop-kiro-fdlm
 cd workshop-kiro-fdlm
 npm install
 npm test
