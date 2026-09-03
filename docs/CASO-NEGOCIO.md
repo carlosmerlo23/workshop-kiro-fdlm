@@ -7,7 +7,7 @@ funcionan mucho mejor cuando entiendes el dominio que le estás describiendo a K
 
 ## Por qué este caso
 
-Fundación delamujer es una entidad microfinanciera colombiana enfocada en la inclusión financiera de
+Fundación de la Mujer es una entidad microfinanciera colombiana enfocada en la inclusión financiera de
 mujeres microempresarias, con presencia fuerte en zonas donde no hay oficinas cerca. La
 **corresponsalía bancaria** es justamente el mecanismo que resuelve ese problema: comercios aliados
 —una papelería, una miscelánea, una ferretería— habilitados para prestar servicios financieros en
@@ -33,7 +33,7 @@ Para el workshop es un caso ideal por tres razones:
 
 ```
    ┌──────────┐        ┌───────────────────┐        ┌──────────────────────┐
-   │ Cliente  │───────▶│   Corresponsal    │───────▶│  Fundación delamujer │
+   │ Cliente  │───────▶│   Corresponsal    │───────▶│  Fundación de la Mujer │
    │  final   │  llega │ (comercio aliado) │  API   │   (core financiero)  │
    └──────────┘  al    └───────────────────┘        └──────────────────────┘
                  punto           │                             │

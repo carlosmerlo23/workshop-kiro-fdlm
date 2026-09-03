@@ -200,7 +200,7 @@ Con la misma honestidad que en la Sesión 1:
 - **Las decisiones de arquitectura siguen siendo humanas.** Kiro escribe la plantilla de DynamoDB
   impecable; decidir si el caso pide DynamoDB o una base relacional es tu trabajo.
 - **`cfn-guard` valida políticas conocidas, no las de tu entidad.** Las reglas específicas de
-  Fundación delamujer hay que escribirlas. El steering es el primer paso.
+  Fundación de la Mujer hay que escribirlas. El steering es el primer paso.
 - **Una plantilla que valida no es una plantilla probada.** Validar no es desplegar en un ambiente
   de pruebas y verificar que el servicio responde.
 - **El costo hay que estimarlo aparte.** Una arquitectura correcta puede ser inviable

@@ -1,4 +1,4 @@
-# Workshop Kiro — Fundación delamujer
+# Workshop Kiro — Fundación de la Mujer
 
 **Construir software de calidad, más rápido, con inteligencia artificial.**
 
@@ -12,7 +12,7 @@ hacer en cada sesión.
 
 | | |
 |-------|-------|
-| **Cliente** | Fundación delamujer (Colombia) |
+| **Cliente** | Fundación de la Mujer (Colombia) |
 | **Formato** | 2 sesiones de 2 horas |
 | **Modalidad** | Presencial o virtual |
 | **Para quién** | Cualquier persona con curiosidad. No se necesita experiencia previa |
@@ -54,7 +54,7 @@ flowchart LR
 | **Calidad** | La IA ayuda a documentar, probar y validar. Menos errores llegan a producción, menos incidentes que atender |
 | **Continuidad** | El conocimiento queda escrito y versionado, no en la cabeza de una sola persona. Si alguien se va, el proyecto no se detiene |
 | **Costo** | Menos horas en tareas mecánicas significa menos costo por cada entrega. La documentación que "nunca hay tiempo de hacer" se genera sola |
-| **Inclusión digital** | Para una entidad como Fundación delamujer, llegar más rápido con mejores servicios digitales significa acercar la inclusión financiera a más mujeres, en más lugares |
+| **Inclusión digital** | Para una entidad como Fundación de la Mujer, llegar más rápido con mejores servicios digitales significa acercar la inclusión financiera a más mujeres, en más lugares |
 
 > **La idea de fondo:** el software es cada vez más el motor del crecimiento de cualquier organización.
 > Quien construye software más rápido y con más calidad, crece más rápido. Kiro es una palanca directa
@@ -268,9 +268,7 @@ workshop-kiro-fdlm/
 │   ├── GLOSARIO.md               # Glosario sin miedo: términos en palabras simples
 │   ├── CASO-NEGOCIO.md           # Red de corresponsales: contexto y reglas
 │   ├── GESTION-CREDITOS.md       # Planes de Kiro y presupuesto de créditos
-│   ├── CHEATSHEET-KIRO.md        # Referencia rápida de uso
-│   ├── PLAN-ADOPCION.md          # Qué hacer después del workshop
-│   └── ADAPTAR-A-OTRO-CLIENTE.md # Cómo reutilizar este workshop
+│   └── CHEATSHEET-KIRO.md        # Referencia rápida de uso
 │
 ├── assets/                       # Imágenes de referencia para las guías
 │
@@ -359,14 +357,14 @@ herramienta cambia la velocidad a la que se construye.
 |-----|--------|----------|
 | Facilitador principal | `[POR DEFINIR]` | `[POR DEFINIR]` |
 | Soporte técnico | `[POR DEFINIR]` | `[POR DEFINIR]` |
-| Contraparte Fundación delamujer | `[POR DEFINIR]` | `[POR DEFINIR]` |
+| Contraparte Fundación de la Mujer | `[POR DEFINIR]` | `[POR DEFINIR]` |
 | Canal de soporte durante el workshop | `[POR DEFINIR]` | `[POR DEFINIR]` |
 
 ---
 
 ## Licencia y uso
 
-Material preparado para el Workshop Kiro de Fundación delamujer. Uso interno y educativo.
+Material preparado para el Workshop Kiro de Fundación de la Mujer. Uso interno y educativo.
 
 Los datos, corresponsales, documentos de identidad y tarifas usados en los ejemplos son **ficticios**.
 No corresponden a información real de clientes ni a las tarifas vigentes de la entidad.

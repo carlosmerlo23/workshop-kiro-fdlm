@@ -23,7 +23,7 @@ Todo recurso que los soporte lleva:
 |-----|-------|
 | `Proyecto` | Nombre del proyecto |
 | `Ambiente` | `dev`, `qa` o `prod` |
-| `Entidad` | `FundacionDelamujer` |
+| `Entidad` | `FundacionDeLaMujer` |
 | `AdministradoPor` | `CloudFormation` |
 
 ## Seguridad

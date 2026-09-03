@@ -7,7 +7,7 @@ Referencia del Lab 1. Lo que debería saber alguien que entra hoy a mantener `sr
 ## Qué resuelve este módulo
 
 Autoriza y registra las transacciones que los clientes hacen en la red de corresponsales de Fundación
-delamujer: comercios aliados —papelerías, misceláneas, ferreterías— habilitados para prestar servicios
+de la Mujer: comercios aliados —papelerías, misceláneas, ferreterías— habilitados para prestar servicios
 financieros en nombre de la entidad y que reciben una comisión por cada transacción. Es el mecanismo
 que acerca los servicios financieros a zonas donde no hay oficinas.
 

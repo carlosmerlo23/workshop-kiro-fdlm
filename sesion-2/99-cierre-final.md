@@ -108,7 +108,7 @@ Un workshop sin siguiente paso concreto se olvida en dos semanas.
 - [ ] Medir el impacto: tiempo de onboarding, cobertura de tests, tiempo de generación de artefactos
 - [ ] Decidir si Spec sessions entran al flujo formal de documentación de features
 
-Detalle en [docs/PLAN-ADOPCION.md](../docs/PLAN-ADOPCION.md).
+El facilitador puede acompañar al equipo en definir este plan con más detalle después del workshop.
 
 ---
 
@@ -162,7 +162,7 @@ referencia razonable de lo que consume una jornada real de desarrollo asistido.
 │   puede operar y auditar. Ahora tienen cómo hacerla sin que       │
 │   cueste una semana.                                             │
 │                                                                   │
-│   Gracias, Fundación delamujer.                                   │
+│   Gracias, Fundación de la Mujer.                                   │
 │                                                                   │
 └───────────────────────────────────────────────────────────────────┘
 ```
@@ -200,7 +200,4 @@ Cuatro preguntas que de verdad nos sirven:
 ## Material del workshop
 
 Todo el contenido queda en este repositorio, incluidas las soluciones de referencia en
-`soluciones/`. Es tuyo: reutilízalo, adáptalo y compártelo con quien no pudo venir.
-
-Si quieres replicar el workshop para otro equipo, en
-[docs/ADAPTAR-A-OTRO-CLIENTE.md](../docs/ADAPTAR-A-OTRO-CLIENTE.md) está lo que hay que cambiar.
+`soluciones/`. Es tuyo: consúltalo cuando lo necesites y compártelo con quien no pudo venir.

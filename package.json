@@ -1,7 +1,7 @@
 {
   "name": "workshop-kiro-fdlm",
   "version": "1.0.0",
-  "description": "Proyecto base del Workshop Kiro - Red de Corresponsales (Fundacion delamujer)",
+  "description": "Proyecto base del Workshop Kiro - Red de Corresponsales (Fundacion de la Mujer)",
   "main": "src/index.js",
   "scripts": {
     "test": "jest",

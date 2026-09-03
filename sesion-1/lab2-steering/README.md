@@ -80,7 +80,7 @@ mkdir .kiro\steering
 > **Prompt 1:**
 > Crea `.kiro/steering/producto-corresponsales.md` con el contexto de negocio de este proyecto:
 >
-> - Fundación delamujer es una entidad microfinanciera colombiana enfocada en la inclusión
+> - Fundación de la Mujer es una entidad microfinanciera colombiana enfocada en la inclusión
 >   financiera de mujeres microempresarias
 > - Este servicio autoriza transacciones en la red de corresponsales: comercios aliados que prestan
 >   servicios financieros en nombre de la entidad y reciben una comisión por transacción

@@ -2,7 +2,7 @@
 
 ## Quiénes somos
 
-Fundación delamujer es una entidad microfinanciera colombiana enfocada en la inclusión financiera de
+Fundación de la Mujer es una entidad microfinanciera colombiana enfocada en la inclusión financiera de
 mujeres microempresarias, con presencia en zonas donde no hay oficinas cercanas.
 
 ## Qué hace este servicio

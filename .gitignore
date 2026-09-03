@@ -33,6 +33,8 @@ Thumbs.db
 # Solo se ignora estado local de sesiones.
 .kiro/cache/
 
-# Material solo para el facilitador: NO se publica en el repo de asistentes.
-# El archivo sigue existiendo localmente para que el facilitador lo estudie.
+# Material solo para el facilitador/consultor: NO se publica en el repo de asistentes.
+# Los archivos siguen existiendo localmente para que el facilitador los estudie.
 docs/FACILITADOR.md
+docs/ADAPTAR-A-OTRO-CLIENTE.md
+docs/PLAN-ADOPCION.md

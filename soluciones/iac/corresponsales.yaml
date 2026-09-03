@@ -2,7 +2,7 @@ AWSTemplateFormatVersion: '2010-09-09'
 
 Description: >
   Servicio de transacciones de la Red de Corresponsales.
-  Artefacto de referencia del Lab 5 - Workshop Kiro (Fundacion delamujer).
+  Artefacto de referencia del Lab 5 - Workshop Kiro (Fundacion de la Mujer).
   Material didactico: NO desplegar sin revision de arquitectura y seguridad.
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -158,7 +158,7 @@ Resources:
         - Key: Ambiente
           Value: !Ref Ambiente
         - Key: Entidad
-          Value: FundacionDelamujer
+          Value: FundacionDeLaMujer
         - Key: AdministradoPor
           Value: CloudFormation
 
@@ -217,7 +217,7 @@ Resources:
         - Key: Ambiente
           Value: !Ref Ambiente
         - Key: Entidad
-          Value: FundacionDelamujer
+          Value: FundacionDeLaMujer
         - Key: AdministradoPor
           Value: CloudFormation
 
@@ -242,7 +242,7 @@ Resources:
         - Key: Ambiente
           Value: !Ref Ambiente
         - Key: Entidad
-          Value: FundacionDelamujer
+          Value: FundacionDeLaMujer
         - Key: AdministradoPor
           Value: CloudFormation
 
@@ -265,7 +265,7 @@ Resources:
         - Key: Ambiente
           Value: !Ref Ambiente
         - Key: Entidad
-          Value: FundacionDelamujer
+          Value: FundacionDeLaMujer
         - Key: AdministradoPor
           Value: CloudFormation
 
@@ -358,7 +358,7 @@ Resources:
         - Key: Ambiente
           Value: !Ref Ambiente
         - Key: Entidad
-          Value: FundacionDelamujer
+          Value: FundacionDeLaMujer
         - Key: AdministradoPor
           Value: CloudFormation
 
@@ -395,7 +395,7 @@ Resources:
         - Key: Ambiente
           Value: !Ref Ambiente
         - Key: Entidad
-          Value: FundacionDelamujer
+          Value: FundacionDeLaMujer
         - Key: AdministradoPor
           Value: CloudFormation
 
@@ -426,7 +426,7 @@ Resources:
         - Key: Ambiente
           Value: !Ref Ambiente
         - Key: Entidad
-          Value: FundacionDelamujer
+          Value: FundacionDeLaMujer
         - Key: AdministradoPor
           Value: CloudFormation
 
@@ -496,7 +496,7 @@ Resources:
         - Key: Ambiente
           Value: !Ref Ambiente
         - Key: Entidad
-          Value: FundacionDelamujer
+          Value: FundacionDeLaMujer
         - Key: AdministradoPor
           Value: CloudFormation
 
@@ -550,7 +550,7 @@ Resources:
         - Key: Ambiente
           Value: !Ref Ambiente
         - Key: Entidad
-          Value: FundacionDelamujer
+          Value: FundacionDeLaMujer
         - Key: AdministradoPor
           Value: CloudFormation
 

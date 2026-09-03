@@ -6,7 +6,7 @@
 
 ## Bienvenida
 
-Bienvenidos al Workshop de Kiro para Fundación delamujer.
+Bienvenidos al Workshop de Kiro para Fundación de la Mujer.
 
 En las próximas dos sesiones vamos a trabajar con Kiro, el entorno de desarrollo agéntico de AWS,
 sobre un caso propio de la entidad: el servicio de transacciones de la **red de corresponsales**.

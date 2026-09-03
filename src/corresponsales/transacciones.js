@@ -48,7 +48,7 @@ function formatearComprobante(tx) {
     return 'TRANSACCION RECHAZADA: ' + tx.motivo;
   }
   const lineas = [
-    'FUNDACION DELAMUJER - RED DE CORRESPONSALES',
+    'FUNDACION DE LA MUJER - RED DE CORRESPONSALES',
     'Comprobante: ' + tx.consecutivo,
     'Punto: ' + tx.corresponsal,
     'Tipo: ' + tx.tipo,
